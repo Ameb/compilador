@@ -15,8 +15,9 @@ literal_booleano    ((?i:verdadero)|(?i:falso))
 literal_caracter    \"[^\"]*\"
 literal_cadena      \'([^']|\/\')*\'
 comentario          \{([^\}]|\/\}|letra_o_cifra)*\}
+OP_comp_sec         ;
 OP_creacion_tipo    =
-OP_asignacion       \:\=
+OP_asignacion       \:=
 OP_tipado           \:
 OP_separador        \,
 OP_subrango         \.\.
@@ -24,10 +25,10 @@ OP_entonces         \-\>
 OP_si_no_si         \[\]
 OP_array_inicio     \[
 OP_array_fin        \]
-OP_suma             +
-OP_resta            -
-OP_multiplicacion   *
-OP_division         /
+OP_suma             \+
+OP_resta            \-
+OP_multiplicacion   \*
+OP_division         \/
 KW_accion           (?i:accion)
 KW_algoritmo        (?i:algoritmo)
 KW_booleano         (?i:booleano)
@@ -71,204 +72,199 @@ KW_y                (?i:y)
 
 %%
 {KW_accion} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_accion %s\n", yytext);
 }
 {KW_algoritmo} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_algoritmo %s\n", yytext);
 }
 {KW_booleano} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_booleano %s\n", yytext);
 }
 {KW_cadena} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_cadena %s\n", yytext);
 }
 {KW_caracter} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_caracter %s\n", yytext);
 }
 {KW_const} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_const %s\n", yytext);
 }
 {KW_continuar} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_continuar %s\n", yytext);
 }
 {KW_de} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_de %s\n", yytext);
 }
 {KW_dev} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_dev %s\n", yytext);
 }
 {KW_div} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_div %s\n", yytext);
 }
 {KW_ent} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_ent %s\n", yytext);
 }
 {KW_entero} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_entero %s\n", yytext);
 }
 {KW_es} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_es %s\n", yytext);
 }
 {KW_faccion} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_faccion %s\n", yytext);
 }
 {KW_falgoritmo} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_falgoritmo %s\n", yytext);
 }
 {KW_fconst} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_fconst %s\n", yytext);
 }
 {KW_ffuncion} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_ffuncion %s\n", yytext);
 }
 {KW_fmientras} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_fmientras %s\n", yytext);
 }
 {KW_fpara} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_fpara %s\n", yytext);
 }
 {KW_fsi} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_fsi %s\n", yytext);
 }
 {KW_ftipo} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_ftipo %s\n", yytext);
 }
 {KW_ftupla} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_ftupla %s\n", yytext);
 }
 {KW_funcion} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_funcion %s\n", yytext);
 }
 {KW_fvar} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_fvar %s\n", yytext);
 }
 {KW_hacer} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_hacer %s\n", yytext);
 }
 {KW_hasta} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_hasta %s\n", yytext);
 }
 {KW_mientras} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_mientras %s\n", yytext);
 }
 {KW_mod} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_mod %s\n", yytext);
 }
 {KW_no} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_no %s\n", yytext);
 }
 {KW_o} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_o %s\n", yytext);
 }
 {KW_para} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_para %s\n", yytext);
 }
 {KW_real} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_real %s\n", yytext);
 }
 {KW_ref} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_ref %s\n", yytext);
 }
 {KW_sal} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_sal %s\n", yytext);
 }
 {KW_si} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_si %s\n", yytext);
 }
 {KW_tabla} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_tabla %s\n", yytext);
 }
 {KW_tipo} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_tipo %s\n", yytext);
 }
 {KW_tupla} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_tupla %s\n", yytext);
 }
 {KW_var} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_var %s\n", yytext);
 }
 {KW_y} {
-    printf("Has leido el keyword %s\n", yytext);
+    printf("keyword KW_y %s\n", yytext);
 }
 
+{OP_comp_sec} {
+    printf("operator OP_comp_sec %s\n", yytext);
+}
 {OP_creacion_tipo} {
-    printf("Has leido el operador %s\n", yytext);
+    printf("operator OP_creacion_tipo %s\n", yytext);
 }
 {OP_asignacion} {
-    printf("Has leido el operador %s\n", yytext);
+    printf("operator OP_asignacion %s\n", yytext);
 }
 {OP_tipado} {
-    printf("Has leido el operador %s\n", yytext);
+    printf("operator OP_tipado %s\n", yytext);
 }
 {OP_separador} {
-    printf("Has leido el operador %s\n", yytext);
+    printf("operator OP_separador %s\n", yytext);
 }
 {OP_subrango} {
-    printf("Has leido el operador %s\n", yytext);
+    printf("operator OP_subrango %s\n", yytext);
 }
 {OP_entonces} {
-    printf("Has leido el operador %s\n", yytext);
+    printf("operator OP_entonces %s\n", yytext);
 }
 {OP_si_no_si} {
-    printf("Has leido el operador %s\n", yytext);
+    printf("operator OP_si_no_si %s\n", yytext);
 }
 {OP_array_inicio} {
-    printf("Has leido el operador %s\n", yytext);
+    printf("operator OP_array_inicio %s\n", yytext);
 }
 {OP_array_fin} {
-    printf("Has leido el operador %s\n", yytext);
-    }
-
-{cifra}+ {
-     printf( "An integer: %s (%d)\n", yytext,
-             atoi( yytext ) );
-     }
-
-{literal_entero} {
-     printf( "A literal_entero: %s (%g)\n", yytext,
-             atof( yytext ) );
-     }
-
-{literal_real} {
-     printf( "A literal_real: %s (%g)\n", yytext,
-             atof( yytext ) );
-     }
-
-{literal_booleano} {
-     printf( "A literal_booleano: %s (%g)\n", yytext,
-             atof( yytext ) );
-     }
-
-{literal_caracter} {
-     printf( "A literal_caracter: %s (%g)\n", yytext,
-             atof( yytext ) );
-     }
-
-{literal_cadena} {
-     printf( "A literal_cadena: %s (%g)\n", yytext,
-             atof( yytext ) );
-     }
-
-{special} {
-     printf( "A special: %s (%g)\n", yytext,
-             atof( yytext ) );
-     }
-
-{white_space} {
-     printf( "A white_space: %s (%g)\n", yytext,
-             atof( yytext ) );
-     }
-
-{comentario} {
-     printf( "A comentario: %s (%g)\n", yytext,
-             atof( yytext ) );
-     }
-
-{identificador} {
-    printf( "An identifier: %s\n", yytext );
+    printf("operator OP_array_fin %s\n", yytext);
+}
+{OP_suma} {
+    printf("operator OP_suma %s\n", yytext);
+}
+{OP_resta} {
+    printf("operator OP_resta %s\n", yytext);
+}
+{OP_multiplicacion} {
+    printf("operator OP_multiplicacion %s\n", yytext);
+}
+{OP_division} {
+    printf("operator OP_division %s\n", yytext);
 }
 
+{literal_entero} {
+     printf( "literal_entero: %s (%g)\n", yytext,
+             atof( yytext ) );
+}
+{literal_real} {
+     printf( "literal_real: %s (%g)\n", yytext,
+             atof( yytext ) );
+}
+{literal_booleano} {
+     printf( "literal_booleano: %s\n", yytext);
+}
+{literal_caracter} {
+     printf( "literal_caracter: %s\n", yytext);
+}
+{literal_cadena} {
+     printf( "literal_cadena: %s\n", yytext);
+}
 
+{special} {
+     printf( "especial: %s\n", yytext);
+}
+{white_space} {
+     printf( "white_space: %s\n", yytext);
+}
+{comentario} {
+     printf( "comment: %s\n", yytext);
+}
+{identificador} {
+    printf( "identifier: %s\n", yytext);
+}
 . {
     printf( "Unrecognized character: %s\n", yytext );
 }

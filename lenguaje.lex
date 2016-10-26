@@ -28,10 +28,7 @@ OP_suma             \+
 OP_resta            \-
 OP_multiplicacion   \*
 OP_division         \/
-OP_mayor            \>
-OP_menor            \<
-OP_mayor_o_igual    \>=
-OP_menor_o_igual    \<=
+OP_rel              \>|\<|\>=|\<=
 KW_accion           (?i:accion)
 KW_algoritmo        (?i:algoritmo)
 KW_booleano         (?i:booleano)
@@ -234,17 +231,8 @@ KW_y                (?i:y)
 {OP_multiplicacion} {
     printf("operator OP_multiplicacion %s\n", yytext);
 }
-{OP_mayor} {
-    printf("operator OP_mayor %s\n", yytext);
-}
-{OP_menor} {
-    printf("operator OP_menor %s\n", yytext);
-}
-{OP_mayor_o_igual} {
-    printf("operator OP_mayor_o_igual %s\n", yytext);
-}
-{OP_menor_o_igual} {
-    printf("operator OP_menor_o_igual %s\n", yytext);
+{OP_rel} {
+    printf("operator OP_rel %s\n", yytext);
 }
 
 {literal_entero} {

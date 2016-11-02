@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern int yylex();
-extern int yyparse();
+int yylex();
 extern FILE* yyin;
 
 void yyerror(const char* s);
@@ -187,3 +186,16 @@ l_ll:
     | expresion TOK_COMA l_ll {}
     | expresion {}
 ;
+
+%%
+
+int main() {
+
+}
+int yylex() {
+
+}
+void yyerror(const char* s) {
+  fprintf(stderr, "Parse error: %s\n", s);
+
+}

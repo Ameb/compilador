@@ -46,10 +46,10 @@ declaracion_var:
     | var lista_d_var {}
 ;
 lista_d_tipo:
-    | identificador TOK_IGUAL d_tipo TOK_PCOMA lista d tipo {}
+    | identificador TOK_IGUAL d_tipo TOK_PCOMA lista_d_tipo {}
 ;
 d_tipo: 
-    | tupla lista campos ftupla {}
+    | tupla lista_campos ftupla {}
     | tabla TOK_ABCORCH expresion_t TOK_SUBRANGO expresion_t TOK_CERCORCH de d_tipo {}
 ;
 d_tipo:
@@ -60,7 +60,7 @@ d_tipo:
 ;
 expresion_t: 
     | expresion {}
-    | literal caracter {}
+    | literal_caracter {}
 ;
 lista_campos: 
     | identificador TOK_DOSP d_tipo TOK_PCOMA lista_campos {}
@@ -143,17 +143,17 @@ asignacion:
 alternativa:
     | si expresion TOK_ENTONCES instrucciones lista_opciones fsi {}
 ;
-lista opciones:
+lista_opciones:
     | TOK_SINO expresion TOK_ENTONCES instrucciones lista_opciones {}
 ;
 iteracion:
     | it_cota_fija {}
     | it_cota_exp {}
 ;
-it cota exp:
+it_cota_exp:
     | mientras expresion hacer instrucciones fmientras {}
 ;
-it cota fija:
+it_cota_fija:
     | para identificador TOK_ASIGNACION expresion hasta expresion hacer instrucciones fpara {}
 ;
 accion_d:
@@ -174,7 +174,7 @@ dparform:
 dpform:
     | ent listaid TOK_DOSP dtipo {}
     | sal listaid TOK_DOSP dtipo {}
-    | e/s listaid TOK_DOSP dtipo {}
+    | TOK_ES listaid TOK_DOSP dtipo {}
 ;
 accion_ll: 
     | identificador TOK_ABPAR l_ll TOK_CERPAR {}

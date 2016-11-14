@@ -8,20 +8,68 @@ extern FILE* yyin;
 void yyerror(const char* s);
 %}
 
+
+%token TOK_ABPAR TOK_CERPAR
+%token TOK_Y TOK_O
+%token TOK_NO
+%token TOK_VERDADERO
+%token TOK_FALSO
+%token TOK_PUNTO
+%token TOK_ASIGNACION
+%token TOK_ENTONCES
+%token TOK_SINO
+%right TOK_MENOSU
+%token TOK_ALGORITMO TOK_FALGORITMO
+%token TOK_IDENTIFICADOR
+%token TOK_COMENTARIO
+%token TOK_TIPO TOK_FTIPO
+%token TOK_CONST TOK_FCONST
+%token TOK_VAR
+%token TOK_TUPLA TOK_FTUPLA
+%token TOK_TABLA
+%token TOK_DE
+%token TOK_REF
+%token TOK_TIPOBASE
+%token TOK_LITERAL
+%token TOK_LITERALCARACTER
+%token TOK_LITERALNUMERICO
+%token TOK_ENT TOK_SAL
+%token TOK_OPREL
+%token TOK_CONTINUAR
+%token TOK_SI TOK_FSI
+%token TOK_MIENTRAS TOK_FMIENTRAS
+%token TOK_PARA TOK_HASTA TOK_HACER TOK_FPARA
+%token TOK_ACCION TOK_FACCION
+%token TOK_FUNCION TOK_FFUNCION
+%token TOK_DEV
+%token TOK_ABCORCH TOK_CERCORCH
+%token TOK_IGUAL
+%token TOK_PCOMA
+%token TOK_COMA
+%token TOK_ES
+%token TOK_SUBRANGO
+%token TOK_DOSP
+%left TOK_SUMA TOK_RESTA
+%left TOK_MULT TOK_DIV
+%left TOK_MOD TOK_DIVENT
+
+
 %%
 
+
+
 desc_algoritmo: 
-    | algoritmo identificador cabecera_alg bloque_alg falgoritmo {}
+    | TOK_ALGORITMO TOK_IDENTIFICADOR cabecera_alg bloque_alg TOK_FALGORITMO {}
 ;
 cabecera_alg:
-    | decl_globales decl_a_f decl_ent_sal comentario {}
+    | decl_globales decl_a_f decl_ent_sal TOK_COMENTARIO {}
 ;
 bloque_alg:
-    | bloque comentario {}
+    | bloque TOK_COMENTARIO {}
 ;
 decl_globales:
     | declaracion_tipo decl_globales {}
-    | declaracion_const decl_globales {}
+    | declaracion_cte decl_globales {}
 ;
 decl_a_f: 
     | accion_d decl_a_f {}
@@ -32,66 +80,66 @@ bloque:
 ;
 declaraciones: 
     | declaracion_tipo declaraciones {}
-    | declaracion_const declaraciones {}
+    | declaracion_cte declaraciones {}
     | declaracion_var declaraciones {}
     | declaraciones {}
 ;
 declaracion_tipo: 
-    | tipo lista_d_tipo ftipo {}
+    | TOK_TIPO lista_d_tipo TOK_FTIPO {}
 ;
 declaracion_cte:
-    | const lista_d_cte fconst {}
+    | TOK_CONST lista_d_cte TOK_FCONST {}
 ;
 declaracion_var: 
-    | var lista_d_var {}
+    | TOK_VAR lista_d_var {}
 ;
 lista_d_tipo:
-    | identificador TOK_IGUAL d_tipo TOK_PCOMA lista_d_tipo {}
+    | TOK_IDENTIFICADOR TOK_IGUAL d_tipo TOK_PCOMA lista_d_tipo {}
 ;
 d_tipo: 
-    | tupla lista_campos ftupla {}
-    | tabla TOK_ABCORCH expresion_t TOK_SUBRANGO expresion_t TOK_CERCORCH de d_tipo {}
+    | TOK_TUPLA lista_campos TOK_FTUPLA {}
+    | TOK_TABLA TOK_ABCORCH expresion_t TOK_SUBRANGO expresion_t TOK_CERCORCH TOK_DE d_tipo {}
 ;
 d_tipo:
-    | identificador {}
+    | TOK_IDENTIFICADOR {}
     | expresion_t TOK_SUBRANGO expresion_t {}
-    | ref d_tipo {}
-    | tipo_base {}
+    | TOK_REF d_tipo {}
+    | TOK_TIPOBASE {}
 ;
 expresion_t: 
     | expresion {}
-    | literal_caracter {}
+    | TOK_LITERALCARACTER {}
 ;
 lista_campos: 
-    | identificador TOK_DOSP d_tipo TOK_PCOMA lista_campos {}
+    | TOK_IDENTIFICADOR TOK_DOSP d_tipo TOK_PCOMA lista_campos {}
 ;
 lista_d_cte: 
-    | identificador TOK_IGUAL literal TOK_PCOMA lista_d_cte {}
+    | TOK_IDENTIFICADOR TOK_IGUAL TOK_LITERAL TOK_PCOMA lista_d_cte {}
 ;
 lista_d_var:
-    | lista_id TOK_DOSP identificador  TOK_PCOMA {}
+    | lista_id TOK_DOSP TOK_IDENTIFICADOR  TOK_PCOMA {}
     | d_tipo  TOK_PCOMA {}
     | lista_d_var {}
 ;
 lista_id: 
-    | identificador TOK_COMA lista_id {}
-    | identificador {}
+    | TOK_IDENTIFICADOR TOK_COMA lista_id {}
+    | TOK_IDENTIFICADOR {}
 ;
 decl_ent_sal: 
     | decl_ent {}
-    | decl_ent decl_salida {}
-    | decl_salida {}
+    | decl_ent decl_sal {}
+    | decl_sal {}
 ;
 decl_ent: 
-    | ent lista_d_var {}
+    | TOK_ENT lista_d_var {}
 ;
 decl_sal: 
-    | sal lista_d_var {}
+    | TOK_SAL lista_d_var {}
 ;
 expresion:
     | exp_a {}
     | exp_b {}
-    | funcion ll {}
+    | funcion_ll {}
 ;
 exp_a:
     | exp_a TOK_SUMA exp_a {}
@@ -104,8 +152,8 @@ exp_a:
     | exp_a TOK_DIVENT exp_a {}
     | TOK_ABPAR exp_a TOK_CERPAR {}
     | operando {}
-    | literalnumerico {}
-    | TOK_RESTA exp_a {}
+    | TOK_LITERALNUMERICO {}
+    | TOK_MENOSU exp_a {}
 ;
 exp_b:
     | exp_b TOK_Y exp_b {}
@@ -116,14 +164,14 @@ exp_b:
     | TOK_FALSO {}
 ;
 exp_b:
-    | expresion oprel expresion {}
+    | expresion TOK_OPREL expresion {}
     | TOK_ABPAR exp_b TOK_CERPAR {}
 ;
 operando:
-    | identificador {}
+    | TOK_IDENTIFICADOR {}
     | operando TOK_PUNTO operando {}
     | operando TOK_ABCORCH expresion TOK_CERCORCH {}
-    | operando ref {}
+    | operando TOK_REF {}
 ;
 
 instrucciones:
@@ -131,7 +179,7 @@ instrucciones:
     | instruccion {}
 ;
 instruccion:
-    | continuar {}
+    | TOK_CONTINUAR {}
     | asignacion {}
     | alternativa {}
     | iteracion {}
@@ -141,7 +189,7 @@ asignacion:
     | operando TOK_ASIGNACION expresion {}
 ;
 alternativa:
-    | si expresion TOK_ENTONCES instrucciones lista_opciones fsi {}
+    | TOK_SI expresion TOK_ENTONCES instrucciones lista_opciones TOK_FSI {}
 ;
 lista_opciones:
     | TOK_SINO expresion TOK_ENTONCES instrucciones lista_opciones {}
@@ -151,36 +199,36 @@ iteracion:
     | it_cota_exp {}
 ;
 it_cota_exp:
-    | mientras expresion hacer instrucciones fmientras {}
+    | TOK_MIENTRAS expresion TOK_HACER instrucciones TOK_FMIENTRAS {}
 ;
 it_cota_fija:
-    | para identificador TOK_ASIGNACION expresion hasta expresion hacer instrucciones fpara {}
+    | TOK_PARA TOK_IDENTIFICADOR TOK_ASIGNACION expresion TOK_HASTA expresion TOK_HACER instrucciones TOK_FPARA {}
 ;
 accion_d:
-    | accion a_cabecera bloque faccion {}
+    | TOK_ACCION a_cabecera bloque TOK_FACCION {}
 ;
 funcion_d:
-    | funcion f_cabecera bloque dev expresion ffuncion {}
+    | TOK_FUNCION f_cabecera bloque TOK_DEV expresion TOK_FFUNCION {}
 ; 
 a_cabecera:
-    | identificador TOK_ABPAR d_par_form TOK_CERPAR TOK_PCOMA {}
+    | TOK_IDENTIFICADOR TOK_ABPAR d_par_form TOK_CERPAR TOK_PCOMA {}
 ;
 f_cabecera:
-    | identificador TOK_ABPAR lista_d_var TOK_CERPAR dev d_tipo TOK_PCOMA {}
+    | TOK_IDENTIFICADOR TOK_ABPAR lista_d_var TOK_CERPAR TOK_DEV d_tipo TOK_PCOMA {}
 ;
-dparform:
-    | dpform TOK_PCOMA dparform {}
+d_par_form:
+    | d_p_form TOK_PCOMA d_par_form {}
 ;
-dpform:
-    | ent listaid TOK_DOSP dtipo {}
-    | sal listaid TOK_DOSP dtipo {}
-    | TOK_ES listaid TOK_DOSP dtipo {}
+d_p_form:
+    | TOK_ENT lista_id TOK_DOSP d_tipo {}
+    | TOK_SAL lista_id TOK_DOSP d_tipo {}
+    | TOK_ES lista_id TOK_DOSP d_tipo {}
 ;
 accion_ll: 
-    | identificador TOK_ABPAR l_ll TOK_CERPAR {}
+    | TOK_IDENTIFICADOR TOK_ABPAR l_ll TOK_CERPAR {}
 ;
 funcion_ll: 
-    | identificador TOK_ABPAR l_ll TOK_CERPAR {}
+    | TOK_IDENTIFICADOR TOK_ABPAR l_ll TOK_CERPAR {}
 ;
 l_ll: 
     | expresion TOK_COMA l_ll {}

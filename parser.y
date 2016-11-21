@@ -14,7 +14,6 @@ void yyerror(const char* s);
 %token TOK_NO
 %token TOK_VERDADERO
 %token TOK_FALSO
-%token TOK_PUNTO
 %token TOK_ASIGNACION
 %token TOK_ENTONCES
 %token TOK_SINO
@@ -28,12 +27,14 @@ void yyerror(const char* s);
 %token TOK_TABLA
 %token TOK_DE
 %token TOK_REF
+%token TOK_ABCORCH TOK_CERCORCH
+%left TOK_PUNTO
 %token TOK_TIPOBASE
 %token TOK_LITERAL
 %token TOK_LITERALCARACTER
 %token TOK_LITERALNUMERICO
 %token TOK_ENT TOK_SAL
-%token TOK_OPREL
+%nonassoc TOK_OPREL
 %token TOK_PARA TOK_HASTA TOK_HACER TOK_FPARA
 %token TOK_MIENTRAS TOK_FMIENTRAS
 %token TOK_SI TOK_FSI
@@ -42,7 +43,6 @@ void yyerror(const char* s);
 %token TOK_ACCION TOK_FACCION
 %token TOK_FUNCION TOK_FFUNCION
 %token TOK_DEV
-%token TOK_ABCORCH TOK_CERCORCH
 %token TOK_IGUAL
 %token TOK_PCOMA
 %token TOK_COMA
@@ -77,8 +77,7 @@ bloque: declaraciones instrucciones {}
 declaraciones: declaracion_tipo declaraciones {}
     | declaracion_cte declaraciones {}
     | declaracion_var declaraciones {}
-    | declaraciones {}
-    |
+    |  {}
 ;
 declaracion_tipo: TOK_TIPO lista_d_tipo TOK_FTIPO {}
 ;
@@ -106,10 +105,9 @@ lista_campos: TOK_IDENTIFICADOR TOK_DOSP d_tipo TOK_PCOMA lista_campos {}
 lista_d_cte: TOK_IDENTIFICADOR TOK_IGUAL TOK_LITERAL TOK_PCOMA lista_d_cte {}
     |
 ;
-lista_d_var: lista_id TOK_DOSP TOK_IDENTIFICADOR TOK_PCOMA {}
-    | d_tipo TOK_PCOMA {}
-    | lista_d_var {}
-    |
+lista_d_var: lista_id TOK_DOSP TOK_IDENTIFICADOR TOK_PCOMA lista_d_var {}
+    |  lista_id TOK_DOSP d_tipo TOK_PCOMA lista_d_var {}
+    |  {}
 ;
 lista_id: TOK_IDENTIFICADOR TOK_COMA lista_id {}
     | TOK_IDENTIFICADOR {}

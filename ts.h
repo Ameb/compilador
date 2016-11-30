@@ -1,7 +1,7 @@
 #ifndef JJIB_TS_H
 #define JJIB_TS_H
 #define LONG_MAX_NOMBRE 16
-typedef enum {entero, booleano, caracter, real, cadena} etipo;
+typedef enum etipo {entero, booleano, caracter, real, cadena};
 // estructura basica de nuestra lista enlazada
 typedef struct {
 	char nombre[LONG_MAX_NOMBRE];

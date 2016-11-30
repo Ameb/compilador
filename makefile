@@ -3,10 +3,12 @@ all: a.out
 lex.yy.c: $(SOURCE) parser.tab.h parser.tab.c
 	    flex $(SOURCE)
 # bison
-parser.tab.c parser.tab.h: parser.y
+parser.tab.c: parser.y
 	bison -v -d parser.y
-a.out: lex.yy.c
-	    gcc lex.yy.c -lfl
+lex.yy.o: lex.yy.c
+	gcc -c lex.yy.c
+a.out: parser.tab.c lex.yy.o
+	gcc parser.tab.c lex.yy.o -lfl -lm
 run: a.out
 	./a.out
 clean:

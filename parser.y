@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "ts.h"
 
 int yylex();
 extern FILE* yyin;
@@ -39,7 +40,7 @@ void yyerror(const char* s);
 %token TOK_MIENTRAS TOK_FMIENTRAS
 %token TOK_SI TOK_FSI
 %token TOK_CONTINUAR
-%token TOK_IDENTIFICADOR
+%token <para_cadenas> TOK_IDENTIFICADOR
 %token TOK_ACCION TOK_FACCION
 %token TOK_FUNCION TOK_FFUNCION
 %token TOK_DEV
@@ -53,7 +54,11 @@ void yyerror(const char* s);
 %left TOK_MULT TOK_DIV
 %left TOK_MOD TOK_DIVENT
 
-
+%union {
+    struct nodo * para_lista_id;
+    char * para_cadenas;
+}
+%type <para_lista_id> lista_id_prueba
 %%
 
 
@@ -111,6 +116,21 @@ lista_d_var: lista_id TOK_DOSP TOK_IDENTIFICADOR TOK_PCOMA lista_d_var {}
 ;
 lista_id: TOK_IDENTIFICADOR TOK_COMA lista_id {}
     | TOK_IDENTIFICADOR {}
+;
+lista_d_var_prueba: lista_id_prueba TOK_PCOMA lista_id_prueba {
+    }
+    |   {}
+;
+lista_id_prueba: TOK_IDENTIFICADOR TOK_DOSP TOK_IDENTIFICADOR {
+        // Esta gramatica es para tipos definidos por el usuario
+    }
+    | TOK_IDENTIFICADOR TOK_DOSP d_tipo {
+        // guardar el tipo en algun sitio
+    }
+    | TOK_IDENTIFICADOR TOK_COMA lista_id_prueba {
+        // en lista_id tenemos ese tipo guardado para asignarlo a 
+        // TOK_IDENTIFICADOR
+    }
 ;
 decl_ent_sal: decl_ent {}
     | decl_ent decl_sal {}

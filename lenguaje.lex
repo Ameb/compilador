@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "parser.tab.h"
 %}
 ER_cifra               [0-9]
 ER_letra               [A-Za-z]
@@ -273,7 +274,9 @@ ER_KW_y                (?i:y)
      printf( "comment: %s\n", yytext);
 }
 {ER_identificador} {
-    printf( "identifier: %s\n", yytext);
+    yylval.para_cadenas = malloc(strlen(yytext));
+    strncpy(yylval.para_cadenas, yytext, strlen(yytext));
+    printf( "identifier: %s\n", yylval.para_cadenas);
 }
 . {
     printf( "Unrecognized character: %s\n", yytext );

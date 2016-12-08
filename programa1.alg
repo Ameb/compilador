@@ -1,6 +1,6 @@
-algoritmo intercambio;
+algoritmo intercambio
 	ent a, b: entero;
-	sal a, b: entero
+	sal a, b: entero;
 {Prec: a= A AND b = B}
 	var
 		aux: entero;

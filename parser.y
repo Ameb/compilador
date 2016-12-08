@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ts.h"
+#include "definiciones.h"
 
 int yylex();
 extern FILE* yyin;
@@ -23,14 +24,14 @@ void yyerror(const char* s);
 %token TOK_COMENTARIO
 %token TOK_TIPO TOK_FTIPO
 %token TOK_CONST TOK_FCONST
-%token TOK_VAR
+%token TOK_VAR TOK_FVAR
 %token TOK_TUPLA TOK_FTUPLA
 %token TOK_TABLA
 %token TOK_DE
 %token TOK_REF
 %token TOK_ABCORCH TOK_CERCORCH
 %left TOK_PUNTO
-%token TOK_TIPOBASE
+%token <para_entero> TOK_TIPOBASE
 %token TOK_LITERAL
 %token TOK_LITERALCARACTER
 %token TOK_LITERALNUMERICO
@@ -45,6 +46,7 @@ void yyerror(const char* s);
 %token TOK_FUNCION TOK_FFUNCION
 %token TOK_DEV
 %token TOK_IGUAL
+// asignacion?
 %token TOK_PCOMA
 %token TOK_COMA
 %token TOK_ES
@@ -56,39 +58,51 @@ void yyerror(const char* s);
 
 %union {
     struct nodo * para_lista_id;
+    int para_entero;
     char * para_cadenas;
 }
-%type <para_lista_id> lista_id_prueba
+%type <para_lista_id> lista_id
+%type <para_entero> d_tipo
 %%
 
 
 
-desc_algoritmo: TOK_ALGORITMO TOK_IDENTIFICADOR cabecera_alg bloque_alg TOK_FALGORITMO {}
+desc_algoritmo: TOK_ALGORITMO TOK_IDENTIFICADOR cabecera_alg bloque_alg TOK_FALGORITMO {
+    printf("P: reducido desc_algoritmo\n");
+}
 ;
-cabecera_alg: decl_globales decl_a_f decl_ent_sal TOK_COMENTARIO {}
+cabecera_alg: decl_globales decl_a_f decl_ent_sal TOK_COMENTARIO {
+    printf("P: reducido cabecera_alg\n");
+}
 ;
-bloque_alg: bloque TOK_COMENTARIO {}
+bloque_alg: bloque TOK_COMENTARIO {
+    printf("P: reducido bloque_alg\n");
+}
 ;
 decl_globales: declaracion_tipo decl_globales {}
     | declaracion_cte decl_globales {}
-    |
+    | {printf("P: no hay decl_globales\n");}
 ;
 decl_a_f: accion_d decl_a_f {}
     | funcion_d decl_a_f {}
-    |
+    | {printf("P: no hay decl_a_f\n");}
 ;
-bloque: declaraciones instrucciones {}
+bloque: declaraciones instrucciones {
+    printf("P: reducido bloque\n");
+}
 ;
 declaraciones: declaracion_tipo declaraciones {}
     | declaracion_cte declaraciones {}
-    | declaracion_var declaraciones {}
-    |  {}
+    | declaracion_var declaraciones {
+        printf("P: reducida declaracion_var\n");
+    }
+    | {}
 ;
 declaracion_tipo: TOK_TIPO lista_d_tipo TOK_FTIPO {}
 ;
 declaracion_cte: TOK_CONST lista_d_cte TOK_FCONST {}
 ;
-declaracion_var: TOK_VAR lista_d_var {}
+declaracion_var: TOK_VAR lista_d_var TOK_FVAR{}
 ;
 lista_d_tipo: TOK_IDENTIFICADOR TOK_IGUAL d_tipo TOK_PCOMA lista_d_tipo {}
     |
@@ -99,7 +113,10 @@ d_tipo: TOK_TUPLA lista_campos TOK_FTUPLA {}
 d_tipo: TOK_IDENTIFICADOR {}
     | expresion_t TOK_SUBRANGO expresion_t {}
     | TOK_REF d_tipo {}
-    | TOK_TIPOBASE {}
+    | TOK_TIPOBASE {
+        $$ = $1;
+        printf("P: Reducido TOK_TIPOBASE d_tipo: %d\n",$$);
+    }
 ;
 expresion_t: expresion {}
     | TOK_LITERALCARACTER {}
@@ -115,23 +132,27 @@ lista_d_var: lista_id TOK_DOSP TOK_IDENTIFICADOR TOK_PCOMA lista_d_var {}
     |  {}
 ;
 lista_id: TOK_IDENTIFICADOR TOK_COMA lista_id {}
-    | TOK_IDENTIFICADOR {}
+    | TOK_IDENTIFICADOR {
+        printf("P: Reducida lista_id con un unico item\n");
+    }
 ;
-lista_d_var_prueba: lista_id_prueba TOK_PCOMA lista_id_prueba {
+/*
+lista_d_var: lista_id TOK_PCOMA lista_id {
     }
     |   {}
 ;
-lista_id_prueba: TOK_IDENTIFICADOR TOK_DOSP TOK_IDENTIFICADOR {
+lista_id: TOK_IDENTIFICADOR TOK_DOSP TOK_IDENTIFICADOR {
         // Esta gramatica es para tipos definidos por el usuario
     }
     | TOK_IDENTIFICADOR TOK_DOSP d_tipo {
         // guardar el tipo en algun sitio
     }
-    | TOK_IDENTIFICADOR TOK_COMA lista_id_prueba {
+    | TOK_IDENTIFICADOR TOK_COMA lista_id {
         // en lista_id tenemos ese tipo guardado para asignarlo a 
         // TOK_IDENTIFICADOR
     }
 ;
+*/
 decl_ent_sal: decl_ent {}
     | decl_ent decl_sal {}
     | decl_sal {}
@@ -172,11 +193,18 @@ operando: TOK_IDENTIFICADOR {}
     | operando TOK_REF {}
 ;
 
-instrucciones: instruccion TOK_PCOMA instrucciones {}
-    | instruccion {}
+instrucciones: instruccion TOK_PCOMA instrucciones {
+        printf("P: Reducida instruccion con mas instrucciones detras\n");
+    }
+    | instruccion {
+        printf("P: Reducida instruccion 'suelta'\n");
+    }
+    | {}
 ;
 instruccion:  TOK_CONTINUAR {}
-    | asignacion {}
+    | asignacion {
+        printf("P: reducida instruccion asignacion\n");
+        }
     | alternativa {}
     | iteracion {}
     | accion_ll {}
@@ -227,7 +255,7 @@ if ( argc > 0 )
 else
      yyin = stdin;
 
-yylex();
+yyparse();
 }
 
 void yyerror(const char* s) {

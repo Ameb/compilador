@@ -127,6 +127,7 @@ lista_campos: TOK_IDENTIFICADOR TOK_DOSP d_tipo TOK_PCOMA lista_campos {}
 lista_d_cte: TOK_IDENTIFICADOR TOK_IGUAL TOK_LITERAL TOK_PCOMA lista_d_cte {}
     |
 ;
+/*
 lista_d_var: lista_id TOK_DOSP TOK_IDENTIFICADOR TOK_PCOMA lista_d_var {}
     |  lista_id TOK_DOSP d_tipo TOK_PCOMA lista_d_var {}
     |  {}
@@ -136,8 +137,8 @@ lista_id: TOK_IDENTIFICADOR TOK_COMA lista_id {}
         printf("P: Reducida lista_id con un unico item\n");
     }
 ;
-/*
-lista_d_var: lista_id TOK_PCOMA lista_id {
+*/
+lista_d_var: lista_id TOK_PCOMA lista_d_var {
     }
     |   {}
 ;
@@ -152,7 +153,6 @@ lista_id: TOK_IDENTIFICADOR TOK_DOSP TOK_IDENTIFICADOR {
         // TOK_IDENTIFICADOR
     }
 ;
-*/
 decl_ent_sal: decl_ent {}
     | decl_ent decl_sal {}
     | decl_sal {}

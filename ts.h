@@ -12,4 +12,7 @@ typedef struct {
 	struct nodo * init;
 	struct nodo * fin;
 } ts;
+
+void ts_append(struct ts* tabla_simbolos, struct nodo* n);
+
 #endif

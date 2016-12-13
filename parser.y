@@ -8,6 +8,9 @@ int yylex();
 extern FILE* yyin;
 
 void yyerror(const char* s);
+addVarToTS(char* nombre, int tipo);
+struct ts* tabla_simbolos;
+tabla_simbolos = (struct ts*) malloc (sizeof(struct ts));
 %}
 
 
@@ -142,13 +145,20 @@ lista_d_var: lista_id TOK_PCOMA lista_d_var {
     }
     |   {}
 ;
-lista_id: TOK_IDENTIFICADOR TOK_DOSP TOK_IDENTIFICADOR {
+lista_id: /*TOK_IDENTIFICADOR TOK_DOSP TOK_IDENTIFICADOR {
         // Esta gramatica es para tipos definidos por el usuario
-    }
-    | TOK_IDENTIFICADOR TOK_DOSP d_tipo {
+    }*/
+      TOK_IDENTIFICADOR TOK_DOSP d_tipo {
+        printf("P: reducido tipo %d\n",$3);
+        printf("P: leido %s de tipo %d\n", $1, $3);
+        $$ = $3;
+        addVarToTS($1,$3);
         // guardar el tipo en algun sitio
+
     }
     | TOK_IDENTIFICADOR TOK_COMA lista_id {
+        printf("P: leido %s de tipo %d\n", $1, $3);
+        addVarToTS($1,$3);
         // en lista_id tenemos ese tipo guardado para asignarlo a 
         // TOK_IDENTIFICADOR
     }
@@ -261,4 +271,13 @@ yyparse();
 void yyerror(const char* s) {
   fprintf(stderr, "Parse error: %s\n", s);
 
+}
+// añadir variable a la tabla de símbolos
+addVarToTS(char *nombre, int tipo) {
+    struct nodo *temp;
+    temp = (struct nodo *) malloc(sizeof(struct nodo));
+    temp->nombre = nombre;
+    temp->tipo = tipo;
+    temp->sig = NULL;
+    ts_append(tabla_simbolos, temp);
 }

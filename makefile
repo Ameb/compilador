@@ -7,8 +7,10 @@ parser.tab.c: parser.y
 	bison -v -d parser.y
 lex.yy.o: lex.yy.c
 	gcc -c lex.yy.c
-a.out: parser.tab.c lex.yy.o
-	gcc parser.tab.c lex.yy.o -lfl -lm
+ts.o: ts.c ts.h
+	gcc -c ts.c
+a.out: parser.tab.c lex.yy.o ts.o
+	gcc parser.tab.c lex.yy.o ts.o -lfl -lm
 run: a.out
 	./a.out
 clean:

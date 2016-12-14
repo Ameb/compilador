@@ -9,7 +9,7 @@ int yylex();
 extern FILE* yyin;
 
 void yyerror(const char* s);
-void addVarToTS(char* nombre, etipo tipo);
+void addVarToTS(char* nombre, int tipo);
 struct ts* tabla_simbolos;
 %}
 
@@ -274,7 +274,7 @@ void yyerror(const char* s) {
 
 }
 // añadir variable a la tabla de símbolos
-void addVarToTS(char *nombre, etipo tipo) {
+void addVarToTS(char *nombre, int tipo) {
     //char * nom = malloc(strlen(nombre));
     //strncpy(nom, nombre, strlen(nombre));
     struct nodo *temp;

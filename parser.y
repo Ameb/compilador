@@ -158,6 +158,7 @@ lista_id: /*TOK_IDENTIFICADOR TOK_DOSP TOK_IDENTIFICADOR {
     }
     | TOK_IDENTIFICADOR TOK_COMA lista_id {
         printf("P: leido %s de tipo %d\n", $1, $3);
+        $$ = $3;
         addVarToTS($1,$3);
         // en lista_id tenemos ese tipo guardado para asignarlo a 
         // TOK_IDENTIFICADOR

@@ -4,7 +4,7 @@
 typedef enum etipo {entero, booleano, caracter, real, cadena} etipo;
 // estructura basica de nuestra lista enlazada
 struct nodo{
-    char nombre[LONG_MAX_NOMBRE];
+    char * nombre;
     enum etipo tipo;
     struct nodo * sig;
 }nodo;
@@ -14,5 +14,6 @@ struct ts{
 };
 
 void ts_append(struct ts* tabla_simbolos, struct nodo* n);
+void ts_print(struct ts* tabla_simbolos);
 
 #endif

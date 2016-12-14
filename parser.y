@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "ts.h"
 #include "definiciones.h"
 
@@ -8,9 +9,8 @@ int yylex();
 extern FILE* yyin;
 
 void yyerror(const char* s);
-addVarToTS(char* nombre, int tipo);
+void addVarToTS(char* nombre, etipo tipo);
 struct ts* tabla_simbolos;
-tabla_simbolos = (struct ts*) malloc (sizeof(struct ts));
 %}
 
 
@@ -264,8 +264,9 @@ if ( argc > 0 )
      yyin = fopen( argv[0], "r" );
 else
      yyin = stdin;
-
+tabla_simbolos = (struct ts*) malloc (sizeof(struct ts));
 yyparse();
+ts_print(tabla_simbolos);
 }
 
 void yyerror(const char* s) {
@@ -273,10 +274,14 @@ void yyerror(const char* s) {
 
 }
 // añadir variable a la tabla de símbolos
-addVarToTS(char *nombre, int tipo) {
+void addVarToTS(char *nombre, etipo tipo) {
+    //char * nom = malloc(strlen(nombre));
+    //strncpy(nom, nombre, strlen(nombre));
     struct nodo *temp;
     temp = (struct nodo *) malloc(sizeof(struct nodo));
-    temp->nombre = nombre;
+    //temp->nombre = strdup(nombre);
+    temp->nombre = (char *)malloc(strlen(nombre));;
+    strncpy(temp->nombre, nombre, strlen(nombre));
     temp->tipo = tipo;
     temp->sig = NULL;
     ts_append(tabla_simbolos, temp);

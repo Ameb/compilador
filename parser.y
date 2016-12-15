@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ts.h"
+#include "tc.h"
 #include "definiciones.h"
 
 int yylex();
@@ -11,6 +12,7 @@ extern FILE* yyin;
 void yyerror(const char* s);
 void addVarToTS(char* nombre, int tipo);
 struct ts* tabla_simbolos;
+struct tc* tabla_cuadruplas;
 %}
 
 
@@ -37,7 +39,7 @@ struct ts* tabla_simbolos;
 %token <para_entero> TOK_TIPOBASE
 %token TOK_LITERAL
 %token TOK_LITERALCARACTER
-%token TOK_LITERALNUMERICO
+%token <para_valor> TOK_LITERALNUMERICO
 %token TOK_ENT TOK_SAL
 %nonassoc TOK_OPREL
 %token TOK_PARA TOK_HASTA TOK_HACER TOK_FPARA
@@ -58,14 +60,19 @@ struct ts* tabla_simbolos;
 %left TOK_SUMA TOK_RESTA
 %left TOK_MULT TOK_DIV
 %left TOK_MOD TOK_DIVENT
-
 %union {
-    struct nodo * para_lista_id;
+    //struct nodo * para_lista_id;
     int para_entero;
     char * para_cadenas;
+    /*union {
+        int val_entero;
+        float val_real;
+    } para_valor;*/
 }
-%type <para_lista_id> lista_id
+%type <para_entero> lista_id
 %type <para_entero> d_tipo
+%type <para_entero> operando
+%type <para_valor> exp_a
 %%
 
 
@@ -73,6 +80,7 @@ struct ts* tabla_simbolos;
 desc_algoritmo: TOK_ALGORITMO TOK_IDENTIFICADOR cabecera_alg bloque_alg TOK_FALGORITMO {
     printf("P: reducido desc_algoritmo\n");
 }
+    | exp_a {}
 ;
 cabecera_alg: decl_globales decl_a_f decl_ent_sal TOK_COMENTARIO {
     printf("P: reducido cabecera_alg\n");
@@ -141,14 +149,10 @@ lista_id: TOK_IDENTIFICADOR TOK_COMA lista_id {}
     }
 ;
 */
-lista_d_var: lista_id TOK_PCOMA lista_d_var {
-    }
+lista_d_var: lista_id TOK_PCOMA lista_d_var {}
     |   {}
 ;
-lista_id: /*TOK_IDENTIFICADOR TOK_DOSP TOK_IDENTIFICADOR {
-        // Esta gramatica es para tipos definidos por el usuario
-    }*/
-      TOK_IDENTIFICADOR TOK_DOSP d_tipo {
+lista_id: TOK_IDENTIFICADOR TOK_DOSP d_tipo {
         printf("P: reducido tipo %d\n",$3);
         printf("P: leido %s de tipo %d\n", $1, $3);
         $$ = $3;
@@ -176,7 +180,9 @@ expresion: exp_a {}
     | exp_b {}
     | funcion_ll {}
 ;
-exp_a: exp_a TOK_SUMA exp_a {}
+exp_a: exp_a TOK_SUMA exp_a {
+
+    }
     | exp_a TOK_RESTA exp_a {}
     | exp_a TOK_MULT exp_a {}
     | exp_a TOK_DIV exp_a {}
@@ -185,7 +191,9 @@ exp_a: exp_a TOK_SUMA exp_a {}
 exp_a: exp_a TOK_DIVENT exp_a {}
     | TOK_ABPAR exp_a TOK_CERPAR {}
     | operando {}
-    | TOK_LITERALNUMERICO {}
+    | TOK_LITERALNUMERICO {
+        //printf("Leido %f",$1.val_real);
+    }
     | TOK_MENOSU exp_a {}
 ;
 exp_b: exp_b TOK_Y exp_b {}
@@ -198,7 +206,9 @@ exp_b: exp_b TOK_Y exp_b {}
 exp_b: expresion TOK_OPREL expresion {}
     | TOK_ABPAR exp_b TOK_CERPAR {}
 ;
-operando: TOK_IDENTIFICADOR {}
+operando: TOK_IDENTIFICADOR {
+        // sacar sid de la variable y meterlo en $$
+    }
     | operando TOK_PUNTO operando {}
     | operando TOK_ABCORCH expresion TOK_CERCORCH {}
     | operando TOK_REF {}
@@ -266,6 +276,7 @@ if ( argc > 0 )
 else
      yyin = stdin;
 tabla_simbolos = (struct ts*) malloc (sizeof(struct ts));
+tabla_cuadruplas = (struct tc*) malloc (sizeof(struct tc));
 yyparse();
 ts_print(tabla_simbolos);
 }

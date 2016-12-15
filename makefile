@@ -9,12 +9,14 @@ lex.yy.o: lex.yy.c
 	gcc -c lex.yy.c
 ts.o: ts.c ts.h
 	gcc -c ts.c
-a.out: parser.tab.c lex.yy.o ts.o
-	gcc parser.tab.c lex.yy.o ts.o -lfl -lm
+tc.o: tc.c tc.h
+	gcc -c tc.c
+a.out: parser.tab.c lex.yy.o ts.o tc.o
+	gcc parser.tab.c lex.yy.o ts.o tc.o -lfl -lm
 run: a.out
 	./a.out
 clean:
-	rm a.out lex.yy.c parser.tab.* parser.output
+	rm a.out lex.yy.c parser.tab.* parser.output *.o
 # genera nombre.tab.h que habra que hacer include
 # mirar nombre.output
 # 

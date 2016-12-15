@@ -311,10 +311,12 @@ ER_KW_y                (?i:y)
 }
 
 {ER_literal_entero} {
+    //yylval.para_valor.val_entero = atoi(yytext);
     printf( "literal_entero: %s (%d)\n", yytext, atoi( yytext ) );
     return TOK_LITERALNUMERICO;
 }
 {ER_literal_real} {
+    //yylval.para_valor.val_real = atof(yytext);
     printf( "literal_real: %s (%g)\n", yytext, atof( yytext ) );
     return TOK_LITERALNUMERICO;
 }

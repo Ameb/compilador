@@ -57,22 +57,18 @@ struct tc* tabla_cuadruplas;
 %token TOK_ES
 %token TOK_SUBRANGO
 %token TOK_DOSP
-%left TOK_SUMA TOK_RESTA
-%left TOK_MULT TOK_DIV
-%left TOK_MOD TOK_DIVENT
+%left <para_entero> TOK_SUMA TOK_RESTA
+%left <para_entero> TOK_MULT TOK_DIV
+%left <para_entero> TOK_MOD TOK_DIVENT
 %union {
     //struct nodo * para_lista_id;
     int para_entero;
     char * para_cadenas;
-    /*union {
-        int val_entero;
-        float val_real;
-    } para_valor;*/
 }
 %type <para_entero> lista_id
 %type <para_entero> d_tipo
 %type <para_entero> operando
-%type <para_valor> exp_a
+%type <para_entero> exp_a
 %%
 
 
@@ -181,20 +177,71 @@ expresion: exp_a {}
     | funcion_ll {}
 ;
 exp_a: exp_a TOK_SUMA exp_a {
-
+        if (ts_tipo($1) == ts_tipo($3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo($1));
+            gen(tabla_cuadruplas, $2, $1, $3, res);
+        }
+        else {
+            yyerror("Tipos incompatibles.");        
+        }
     }
-    | exp_a TOK_RESTA exp_a {}
-    | exp_a TOK_MULT exp_a {}
-    | exp_a TOK_DIV exp_a {}
-    | exp_a TOK_MOD exp_a {}
+    | exp_a TOK_RESTA exp_a {
+        if (ts_tipo($1) == ts_tipo($3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo($1));
+            gen(tabla_cuadruplas, $2, $1, $3, res);
+        }
+        else {
+            yyerror("Tipos incompatibles.");        
+        }
+    }
+    | exp_a TOK_MULT exp_a {
+        if (ts_tipo($1) == ts_tipo($3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo($1));
+            gen(tabla_cuadruplas, $2, $1, $3, res);
+        }
+        else {
+            yyerror("Tipos incompatibles.");        
+        }
+    }
+    | exp_a TOK_DIV exp_a {
+        if (ts_tipo($1) == ts_tipo($3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo($1));
+            gen(tabla_cuadruplas, $2, $1, $3, res);
+        }
+        else {
+            yyerror("Tipos incompatibles.");        
+        }
+    }
+    | exp_a TOK_MOD exp_a {
+        if (ts_tipo($1) == ts_tipo($3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo($1));
+            gen(tabla_cuadruplas, $2, $1, $3, res);
+        }
+        else {
+            yyerror("Tipos incompatibles.");        
+        }
+    }
 ;
-exp_a: exp_a TOK_DIVENT exp_a {}
-    | TOK_ABPAR exp_a TOK_CERPAR {}
+exp_a: exp_a TOK_DIVENT exp_a {
+        if (ts_tipo($1) == ts_tipo($3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo($1));
+            gen(tabla_cuadruplas, $2, $1, $3, res);
+        }
+        else {
+            yyerror("Tipos incompatibles.");        
+        }
+    }
+    | TOK_ABPAR exp_a TOK_CERPAR {
+        $$ = $2;
+    }
     | operando {}
     | TOK_LITERALNUMERICO {
         //printf("Leido %f",$1.val_real);
     }
-    | TOK_MENOSU exp_a {}
+    | TOK_MENOSU exp_a {
+        int res = newtemp(tabla_simbolos, ts_tipo($2));
+        gen(tabla_cuadruplas, ts_tipo($2), NULL, $2, res); /// CAMBIAR EL NULL
+    }
 ;
 exp_b: exp_b TOK_Y exp_b {}
     | exp_b TOK_O exp_b {}

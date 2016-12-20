@@ -4,16 +4,19 @@
 typedef enum etipo {entero, booleano, caracter, real, cadena} etipo;
 // estructura basica de nuestra lista enlazada
 struct nodo{
+	int id_aux;
     char * nombre;
-    enum etipo tipo;
+    int tipo;
     struct nodo * sig;
 }nodo;
 struct ts{
     struct nodo * init;
     struct nodo * fin;
+    int ultimo_id_aux;
 };
 
 void ts_append(struct ts* tabla_simbolos, struct nodo* n);
 void ts_print(struct ts* tabla_simbolos);
+struct nodo*  ts_buscar(struct ts* tabla_simbolos, char * nombre);
 
 #endif

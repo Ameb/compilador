@@ -22,3 +22,15 @@ void ts_print(struct ts* tabla_simbolos) {
         test = test->sig;
     }
 }
+// en nodo tendremos el nodo encontrado
+struct nodo*  ts_buscar(struct ts* tabla_simbolos, char * nombre) {
+    printf("Buscando %s en la ts\n", nombre);
+    struct nodo * aux;
+    if (tabla_simbolos == NULL) return NULL;
+    aux = tabla_simbolos->init;
+    while (aux != NULL && (strcmp(aux->nombre, nombre) != 0)) {
+        aux = aux->sig;
+    }
+    return aux;
+    printf("Encontrado %s en la ts\n", aux->nombre);
+}

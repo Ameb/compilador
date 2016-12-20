@@ -13,6 +13,8 @@ void yyerror(const char* s);
 void addVarToTS(char* nombre, int tipo);
 struct ts* tabla_simbolos;
 struct tc* tabla_cuadruplas;
+struct nodo * test;
+char aux[] = "aux";
 %}
 
 
@@ -270,15 +272,20 @@ l_ll: expresion TOK_COMA l_ll {}
 %%
 extern FILE * yyin;
 int main( int argc, char **argv ){
-++argv, --argc;  /* skip over program name */
-if ( argc > 0 )
-     yyin = fopen( argv[0], "r" );
-else
-     yyin = stdin;
-tabla_simbolos = (struct ts*) malloc (sizeof(struct ts));
-tabla_cuadruplas = (struct tc*) malloc (sizeof(struct tc));
-yyparse();
-ts_print(tabla_simbolos);
+    ++argv, --argc;  /* skip over program name */
+    if ( argc > 0 )
+         yyin = fopen( argv[0], "r" );
+    else
+         yyin = stdin;
+    tabla_simbolos = (struct ts*) malloc (sizeof(struct ts));
+    tabla_cuadruplas = (struct tc*) malloc (sizeof(struct tc));
+    test = ts_buscar(tabla_simbolos,(char*) aux);
+    yyparse();
+    ts_print(tabla_simbolos);
+    test = ts_buscar(tabla_simbolos,(char*) aux);
+    if (test != NULL) {
+        printf("Encontrado aux: %s", test->nombre);
+    }
 }
 
 void yyerror(const char* s) {

@@ -17,4 +17,5 @@ struct tc{
 };
 
 void gen(struct tc* tabla_cuadruplas, int op, int op1, int op2, int res);
+void tc_print(struct tc* tabla_cuadruplas);
 #endif

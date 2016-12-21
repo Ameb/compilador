@@ -21,11 +21,11 @@ int ts_append(struct ts* tabla_simbolos, struct nodo* n) {
     return n->sid;
 }
 void ts_print(struct ts* tabla_simbolos) {
-    printf("-------------------\nImprimiendo variables de la tabla de simbolos\n");
+    printf("Tabla simbolos:\nsid\tnombre\ttipo\n");
     struct nodo* test;
     test = tabla_simbolos->init;
     while (test != NULL) {
-        printf("Variable %3d: %s de tipo %d\n",test->sid, test->nombre, test->tipo);
+        printf("%3d\t%s\t%d\n",test->sid, test->nombre, test->tipo);
         test = test->sig;
     }
 }
@@ -34,7 +34,7 @@ int ts_tipo(struct ts* tabla_simbolos, int sid) {
     struct nodo * aux;
     aux = ts_buscar_sid(tabla_simbolos, sid);
     if (aux != NULL) {
-        return aux->sid;
+        return aux->tipo;
     }
     else {
         return 0;    

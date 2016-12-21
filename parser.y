@@ -179,9 +179,11 @@ expresion: exp_a {}
     | funcion_ll {}
 ;
 exp_a: exp_a TOK_SUMA exp_a {
+        //printf("Sumando variables %d y %d de tipos %d y %d\n",$1,$3,ts_tipo(tabla_simbolos, $1),ts_tipo(tabla_simbolos, $3));
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
-            int res = newtemp(tabla_simbolos, ts_tipo($1));
+            int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos,$1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
+            $$ = res;
         }
         else {
             yyerror("Tipos incompatibles.");        
@@ -191,6 +193,7 @@ exp_a: exp_a TOK_SUMA exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
+            $$ = res;
         }
         else {
             yyerror("Tipos incompatibles.");        
@@ -200,6 +203,7 @@ exp_a: exp_a TOK_SUMA exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
+            $$ = res;
         }
         else {
             yyerror("Tipos incompatibles.");        
@@ -209,6 +213,7 @@ exp_a: exp_a TOK_SUMA exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
+            $$ = res;
         }
         else {
             yyerror("Tipos incompatibles.");        
@@ -218,6 +223,7 @@ exp_a: exp_a TOK_SUMA exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
+            $$ = res;
         }
         else {
             yyerror("Tipos incompatibles.");        
@@ -228,6 +234,7 @@ exp_a: exp_a TOK_DIVENT exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
+            $$ = res;
         }
         else {
             yyerror("Tipos incompatibles.");        
@@ -242,9 +249,10 @@ exp_a: exp_a TOK_DIVENT exp_a {
     | TOK_LITERALNUMERICO {
         //printf("Leido %f",$1.val_real);
     }
-    | TOK_MENOSU exp_a {
+    | TOK_RESTA exp_a {
         int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $2));
-        gen(tabla_cuadruplas, ts_tipo(tabla_simbolos, $2), $2, 0, res); /// CAMBIAR EL NULL
+        gen(tabla_cuadruplas, $1, $2, 0, res);
+        $$ = res;
     }
 ;
 exp_b: exp_b TOK_Y exp_b {}
@@ -262,9 +270,9 @@ operando: TOK_IDENTIFICADOR {
         struct nodo* aux;
         aux = ts_buscar_nombre(tabla_simbolos, $1);
         if (aux != NULL)
-            $$ = aux->sig;
+            $$ = aux->sid;
         else
-            yyerror("variable %s desconocida", $1);
+            yyerror("variable desconocida");
     }
     | operando TOK_PUNTO operando {}
     | operando TOK_ABCORCH expresion TOK_CERCORCH {}
@@ -287,7 +295,11 @@ instruccion:  TOK_CONTINUAR {}
     | iteracion {}
     | accion_ll {}
 ;
-asignacion: operando TOK_ASIGNACION expresion {}
+asignacion: operando TOK_ASIGNACION expresion {
+        //int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $2));
+        //gen(tabla_cuadruplas, ts_tipo(tabla_simbolos, $2), $2, 0, res);
+        //$$ = res;    
+}
 ;
 alternativa: TOK_SI expresion TOK_ENTONCES instrucciones lista_opciones TOK_FSI {}
 ;
@@ -337,6 +349,7 @@ int main( int argc, char **argv ){
     tabla_cuadruplas = (struct tc*) malloc (sizeof(struct tc));
     yyparse();
     ts_print(tabla_simbolos);
+    tc_print(tabla_cuadruplas);
     test = ts_buscar_nombre(tabla_simbolos,(char*) aux);
     if (test != NULL) {
         printf("Encontrado aux: %s", test->nombre);

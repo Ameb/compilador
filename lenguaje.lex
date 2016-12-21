@@ -293,6 +293,10 @@ ER_KW_y                (?i:y)
     printf("operator OP_multiplicacion %s\n", yytext);
     return TOK_MULT;
 }
+{ER_OP_division} {
+    printf("operator OP_multiplicacion %s\n", yytext);
+    return TOK_DIV;    
+}
 {ER_OP_mayor} {
     printf("operator OP_mayor %s\n", yytext);
     return TOK_OPREL;

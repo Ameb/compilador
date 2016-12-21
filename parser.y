@@ -179,7 +179,7 @@ expresion: exp_a {}
     | funcion_ll {}
 ;
 exp_a: exp_a TOK_SUMA exp_a {
-        if (ts_tipo($1) == ts_tipo($3)) {
+        if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo($1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
         }
@@ -188,8 +188,8 @@ exp_a: exp_a TOK_SUMA exp_a {
         }
     }
     | exp_a TOK_RESTA exp_a {
-        if (ts_tipo($1) == ts_tipo($3)) {
-            int res = newtemp(tabla_simbolos, ts_tipo($1));
+        if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
         }
         else {
@@ -197,8 +197,8 @@ exp_a: exp_a TOK_SUMA exp_a {
         }
     }
     | exp_a TOK_MULT exp_a {
-        if (ts_tipo($1) == ts_tipo($3)) {
-            int res = newtemp(tabla_simbolos, ts_tipo($1));
+        if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
         }
         else {
@@ -206,8 +206,8 @@ exp_a: exp_a TOK_SUMA exp_a {
         }
     }
     | exp_a TOK_DIV exp_a {
-        if (ts_tipo($1) == ts_tipo($3)) {
-            int res = newtemp(tabla_simbolos, ts_tipo($1));
+        if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
         }
         else {
@@ -215,8 +215,8 @@ exp_a: exp_a TOK_SUMA exp_a {
         }
     }
     | exp_a TOK_MOD exp_a {
-        if (ts_tipo($1) == ts_tipo($3)) {
-            int res = newtemp(tabla_simbolos, ts_tipo($1));
+        if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
         }
         else {
@@ -225,8 +225,8 @@ exp_a: exp_a TOK_SUMA exp_a {
     }
 ;
 exp_a: exp_a TOK_DIVENT exp_a {
-        if (ts_tipo($1) == ts_tipo($3)) {
-            int res = newtemp(tabla_simbolos, ts_tipo($1));
+        if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, $2, $1, $3, res);
         }
         else {
@@ -243,8 +243,8 @@ exp_a: exp_a TOK_DIVENT exp_a {
         //printf("Leido %f",$1.val_real);
     }
     | TOK_MENOSU exp_a {
-        int res = newtemp(tabla_simbolos, ts_tipo($2));
-        gen(tabla_cuadruplas, ts_tipo($2), NULL, $2, res); /// CAMBIAR EL NULL
+        int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $2));
+        gen(tabla_cuadruplas, ts_tipo(tabla_simbolos, $2), $2, 0, res); /// CAMBIAR EL NULL
     }
 ;
 exp_b: exp_b TOK_Y exp_b {}

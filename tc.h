@@ -5,11 +5,13 @@
 #define DOP_MULTIPLICACION_ENT 13
 #define DOP_DIVISION_ENT 14
 #define DOP_MENOSU_ENT 15
+#define DOP_MODENT 16
+#define DOP_DIVENT 17
 #define DOP_SUMA_REAL 21
 #define DOP_RESTA_REAL 22
 #define DOP_MULTIPLICACION_REAL 23
 #define DOP_DIVISION_REAL 24
-#define DOP_MENOSU_REAL 15
+#define DOP_MENOSU_REAL 25
 
 struct tc{
     int nextquad;

@@ -182,7 +182,18 @@ exp_a: exp_a TOK_SUMA exp_a {
         //printf("Sumando variables %d y %d de tipos %d y %d\n",$1,$3,ts_tipo(tabla_simbolos, $1),ts_tipo(tabla_simbolos, $3));
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos,$1));
-            gen(tabla_cuadruplas, $2, $1, $3, res);
+            int aux;
+            switch(ts_tipo(tabla_simbolos,res)) {
+                case D_ENTERO:
+                    aux = DOP_SUMA_ENT;
+                    break;
+                case D_REAL:
+                    aux = DOP_SUMA_REAL;
+                    break;
+                default:
+                    yyerror("tipos incompatibles");
+            }
+            gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
@@ -192,7 +203,18 @@ exp_a: exp_a TOK_SUMA exp_a {
     | exp_a TOK_RESTA exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            gen(tabla_cuadruplas, $2, $1, $3, res);
+            int aux;
+            switch(ts_tipo(tabla_simbolos,res)) {
+                case D_ENTERO:
+                    aux = DOP_RESTA_ENT;
+                    break;
+                case D_REAL:
+                    aux = DOP_RESTA_REAL;
+                    break;
+                default:
+                    yyerror("tipos incompatibles");
+            }
+            gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
@@ -202,7 +224,18 @@ exp_a: exp_a TOK_SUMA exp_a {
     | exp_a TOK_MULT exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            gen(tabla_cuadruplas, $2, $1, $3, res);
+            int aux;
+            switch(ts_tipo(tabla_simbolos,res)) {
+                case D_ENTERO:
+                    aux = DOP_MULTIPLICACION_ENT;
+                    break;
+                case D_REAL:
+                    aux = DOP_MULTIPLICACION_REAL;
+                    break;
+                default:
+                    yyerror("tipos incompatibles");
+            }
+            gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
@@ -212,7 +245,18 @@ exp_a: exp_a TOK_SUMA exp_a {
     | exp_a TOK_DIV exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            gen(tabla_cuadruplas, $2, $1, $3, res);
+            int aux;
+            switch(ts_tipo(tabla_simbolos,res)) {
+                case D_ENTERO:
+                    aux = DOP_DIVISION_ENT;
+                    break;
+                case D_REAL:
+                    aux = DOP_DIVISION_REAL;
+                    break;
+                default:
+                    yyerror("tipos incompatibles");
+            }
+            gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
@@ -222,7 +266,15 @@ exp_a: exp_a TOK_SUMA exp_a {
     | exp_a TOK_MOD exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            gen(tabla_cuadruplas, $2, $1, $3, res);
+            int aux;
+            switch(ts_tipo(tabla_simbolos,res)) {
+                case D_ENTERO:
+                    aux = DOP_MODENT;
+                    break;
+                default:
+                    yyerror("tipos incompatibles");
+            }
+            gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
@@ -233,7 +285,15 @@ exp_a: exp_a TOK_SUMA exp_a {
 exp_a: exp_a TOK_DIVENT exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            gen(tabla_cuadruplas, $2, $1, $3, res);
+            int aux;
+            switch(ts_tipo(tabla_simbolos,res)) {
+                case D_ENTERO:
+                    aux = DOP_DIVENT;
+                    break;
+                default:
+                    yyerror("tipos incompatibles");
+            }
+            gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
@@ -251,7 +311,18 @@ exp_a: exp_a TOK_DIVENT exp_a {
     }
     | TOK_RESTA exp_a {
         int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $2));
-        gen(tabla_cuadruplas, $1, $2, 0, res);
+        int aux;
+        switch(ts_tipo(tabla_simbolos,res)) {
+            case D_ENTERO:
+                aux = DOP_MENOSU_ENT;
+                break;
+            case D_REAL:
+                aux = DOP_MENOSU_REAL;
+                break;
+            default:
+                yyerror("tipos incompatibles");
+        }
+        gen(tabla_cuadruplas, aux, $2, 0, res);
         $$ = res;
     }
 ;
@@ -259,7 +330,7 @@ exp_b: exp_b TOK_Y exp_b {}
     | exp_b TOK_O exp_b {}
     | TOK_NO exp_b {}
 //    | operando {}    las expresiones booleanas ya no pueden ser terminales
-    | TOK_VERDADERO {}
+    | TOK_VERDADERO {} 
     | TOK_FALSO {}
 ;
 exp_b: expresion TOK_OPREL expresion {}
@@ -296,9 +367,10 @@ instruccion:  TOK_CONTINUAR {}
     | accion_ll {}
 ;
 asignacion: operando TOK_ASIGNACION expresion {
-        //int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $2));
-        //gen(tabla_cuadruplas, ts_tipo(tabla_simbolos, $2), $2, 0, res);
-        //$$ = res;    
+        
+        int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $2));
+        gen(tabla_cuadruplas, ts_tipo(tabla_simbolos, $2), $2, 0, res);
+        $$ = res;    
 }
 ;
 alternativa: TOK_SI expresion TOK_ENTONCES instrucciones lista_opciones TOK_FSI {}

@@ -279,10 +279,9 @@ int main( int argc, char **argv ){
          yyin = stdin;
     tabla_simbolos = (struct ts*) malloc (sizeof(struct ts));
     tabla_cuadruplas = (struct tc*) malloc (sizeof(struct tc));
-    test = ts_buscar(tabla_simbolos,(char*) aux);
     yyparse();
     ts_print(tabla_simbolos);
-    test = ts_buscar(tabla_simbolos,(char*) aux);
+    test = ts_buscar_nombre(tabla_simbolos,(char*) aux);
     if (test != NULL) {
         printf("Encontrado aux: %s", test->nombre);
     }

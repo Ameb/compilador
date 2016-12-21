@@ -29,6 +29,18 @@ void ts_print(struct ts* tabla_simbolos) {
         test = test->sig;
     }
 }
+
+int ts_tipo(struct ts* tabla_simbolos, int sid) {
+    struct nodo * aux;
+    aux = ts_buscar_sid(tabla_simbolos, sid);
+    if (aux != NULL) {
+        return aux->sid;
+    }
+    else {
+        return 0;    
+    }
+}
+
 // busqueda en la ts
 struct nodo* ts_buscar_nombre(struct ts* tabla_simbolos, char * nombre) {
     struct nodo * aux;

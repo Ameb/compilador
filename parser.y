@@ -236,7 +236,9 @@ exp_a: exp_a TOK_DIVENT exp_a {
     | TOK_ABPAR exp_a TOK_CERPAR {
         $$ = $2;
     }
-    | operando {}
+    | operando {
+        $$ = $1;
+    }
     | TOK_LITERALNUMERICO {
         //printf("Leido %f",$1.val_real);
     }
@@ -257,6 +259,12 @@ exp_b: expresion TOK_OPREL expresion {}
 ;
 operando: TOK_IDENTIFICADOR {
         // sacar sid de la variable y meterlo en $$
+        struct nodo* aux;
+        aux = ts_buscar_nombre(tabla_simbolos, $1);
+        if (aux != NULL)
+            $$ = aux->sig;
+        else
+            yyerror("variable %s desconocida", $1);
     }
     | operando TOK_PUNTO operando {}
     | operando TOK_ABCORCH expresion TOK_CERCORCH {}
@@ -325,6 +333,7 @@ int main( int argc, char **argv ){
     else
          yyin = stdin;
     tabla_simbolos = (struct ts*) malloc (sizeof(struct ts));
+    ts_init(tabla_simbolos);
     tabla_cuadruplas = (struct tc*) malloc (sizeof(struct tc));
     yyparse();
     ts_print(tabla_simbolos);

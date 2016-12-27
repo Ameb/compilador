@@ -1,9 +1,9 @@
 #detectar OS X
 OS:= $(shell uname)
 ifeq ($(OS),Darwin)
-	LFL = "-ll"
+	LFL = -ll
 else
-	LFL = "-lfl"
+	LFL = -lfl
 endif
 LENGUAJE=lenguaje.lex
 all: a.out

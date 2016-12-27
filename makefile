@@ -1,7 +1,14 @@
-SOURCE=lenguaje.lex
+#detectar OS X
+OS:= $(shell uname)
+ifeq ($(OS),Darwin)
+	LFL = "-ll"
+else
+	LFL = "-lfl"
+endif
+LENGUAJE=lenguaje.lex
 all: a.out
-lex.yy.c: $(SOURCE) parser.tab.h parser.tab.c
-	    flex $(SOURCE)
+lex.yy.c: $(LENGUAJE) parser.tab.h parser.tab.c
+	    flex $(LENGUAJE)
 # bison
 parser.tab.c: parser.y
 	bison -v -d parser.y
@@ -12,7 +19,7 @@ ts.o: ts.c ts.h
 tc.o: tc.c tc.h
 	gcc -c tc.c
 a.out: parser.tab.c lex.yy.o ts.o tc.o
-	gcc parser.tab.c lex.yy.o ts.o tc.o -lfl -lm
+	gcc parser.tab.c lex.yy.o ts.o tc.o $(LFL) -lm
 run: a.out
 	./a.out
 clean:

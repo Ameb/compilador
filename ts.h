@@ -14,7 +14,7 @@ struct ts{
     struct nodo * fin;
     int ultimo_sid;
 };
-
+void ts_init(struct ts* tabla_simbolos);
 int ts_append(struct ts* tabla_simbolos, struct nodo* n);
 void ts_print(struct ts* tabla_simbolos);
 int ts_tipo(struct ts* tabla_simbolos, int sid);

@@ -12,7 +12,7 @@
 #define DOP_MULTIPLICACION_REAL 23
 #define DOP_DIVISION_REAL 24
 #define DOP_MENOSU_REAL 25
-
+#define DOP_ASIGNACION 30
 struct tc{
     int nextquad;
     int cuadruplas[100][4];

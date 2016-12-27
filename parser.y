@@ -17,7 +17,6 @@ struct nodo * test;
 char aux[] = "aux";
 %}
 
-
 %token TOK_ABPAR TOK_CERPAR
 %token TOK_Y TOK_O
 %token TOK_NO
@@ -71,6 +70,8 @@ char aux[] = "aux";
 %type <para_entero> d_tipo
 %type <para_entero> operando
 %type <para_entero> exp_a
+%type <para_entero> expresion
+%type <para_entero> asignacion
 %%
 
 
@@ -174,7 +175,9 @@ decl_ent: TOK_ENT lista_d_var {}
 ;
 decl_sal: TOK_SAL lista_d_var {}
 ;
-expresion: exp_a {}
+expresion: exp_a {
+        $$ = $1;
+    }
     | exp_b {}
     | funcion_ll {}
 ;
@@ -191,13 +194,13 @@ exp_a: exp_a TOK_SUMA exp_a {
                     aux = DOP_SUMA_REAL;
                     break;
                 default:
-                    yyerror("tipos incompatibles");
+                    yyerror("suma: tipo no conocido");
             }
             gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
-            yyerror("Tipos incompatibles.");        
+            yyerror("suma: Tipos incompatibles.");        
         }
     }
     | exp_a TOK_RESTA exp_a {
@@ -212,13 +215,13 @@ exp_a: exp_a TOK_SUMA exp_a {
                     aux = DOP_RESTA_REAL;
                     break;
                 default:
-                    yyerror("tipos incompatibles");
+                    yyerror("resta: tipo no conocido");
             }
             gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
-            yyerror("Tipos incompatibles.");        
+            yyerror("resta: Tipos incompatibles.");        
         }
     }
     | exp_a TOK_MULT exp_a {
@@ -233,13 +236,13 @@ exp_a: exp_a TOK_SUMA exp_a {
                     aux = DOP_MULTIPLICACION_REAL;
                     break;
                 default:
-                    yyerror("tipos incompatibles");
+                    yyerror("mult: tipo no conocido");
             }
             gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
-            yyerror("Tipos incompatibles.");        
+            yyerror("mult: tipos incompatibles.");        
         }
     }
     | exp_a TOK_DIV exp_a {
@@ -254,13 +257,13 @@ exp_a: exp_a TOK_SUMA exp_a {
                     aux = DOP_DIVISION_REAL;
                     break;
                 default:
-                    yyerror("tipos incompatibles");
+                    yyerror("division: tipo no conocido");
             }
             gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
-            yyerror("Tipos incompatibles.");        
+            yyerror("division: tipos incompatibles");        
         }
     }
     | exp_a TOK_MOD exp_a {
@@ -272,13 +275,14 @@ exp_a: exp_a TOK_SUMA exp_a {
                     aux = DOP_MODENT;
                     break;
                 default:
-                    yyerror("tipos incompatibles");
+                    yyerror("mod: tipo no conocido");
             }
+            printf("mod");
             gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
-            yyerror("Tipos incompatibles.");        
+            yyerror("mod: Tipos incompatibles");        
         }
     }
 ;
@@ -291,13 +295,13 @@ exp_a: exp_a TOK_DIVENT exp_a {
                     aux = DOP_DIVENT;
                     break;
                 default:
-                    yyerror("tipos incompatibles");
+                    yyerror("divent: tipo no conocido");
             }
             gen(tabla_cuadruplas, aux, $1, $3, res);
             $$ = res;
         }
         else {
-            yyerror("Tipos incompatibles.");        
+            yyerror("divent: Tipos incompatibles.");        
         }
     }
     | TOK_ABPAR exp_a TOK_CERPAR {
@@ -320,8 +324,9 @@ exp_a: exp_a TOK_DIVENT exp_a {
                 aux = DOP_MENOSU_REAL;
                 break;
             default:
-                yyerror("tipos incompatibles");
+                yyerror("restau: tipo no conocido");
         }
+        printf("asd");
         gen(tabla_cuadruplas, aux, $2, 0, res);
         $$ = res;
     }
@@ -330,7 +335,7 @@ exp_b: exp_b TOK_Y exp_b {}
     | exp_b TOK_O exp_b {}
     | TOK_NO exp_b {}
 //    | operando {}    las expresiones booleanas ya no pueden ser terminales
-    | TOK_VERDADERO {} 
+    | TOK_VERDADERO {}
     | TOK_FALSO {}
 ;
 exp_b: expresion TOK_OPREL expresion {}
@@ -367,10 +372,14 @@ instruccion:  TOK_CONTINUAR {}
     | accion_ll {}
 ;
 asignacion: operando TOK_ASIGNACION expresion {
-        
-        int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $2));
-        gen(tabla_cuadruplas, ts_tipo(tabla_simbolos, $2), $2, 0, res);
-        $$ = res;    
+        printf("Asignacion: %d(%d) := %d(%d)\n", $1, ts_tipo(tabla_simbolos, $1), $3, ts_tipo(tabla_simbolos, $3));
+        if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
+            int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
+            gen(tabla_cuadruplas, DOP_ASIGNACION, $1, $3, res);
+            $$ = res;
+        } else {
+            yyerror("asignacion: Tipos incompatibles."); 
+        }
 }
 ;
 alternativa: TOK_SI expresion TOK_ENTONCES instrucciones lista_opciones TOK_FSI {}

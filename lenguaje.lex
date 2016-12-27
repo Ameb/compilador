@@ -294,7 +294,7 @@ ER_KW_y                (?i:y)
     return TOK_MULT;
 }
 {ER_OP_division} {
-    printf("operator OP_multiplicacion %s\n", yytext);
+    printf("operator OP_division %s\n", yytext);
     return TOK_DIV;    
 }
 {ER_OP_mayor} {

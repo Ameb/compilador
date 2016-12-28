@@ -35,6 +35,7 @@ ER_OP_mayor            \>
 ER_OP_menor            \<
 ER_OP_mayor_o_igual    \>=
 ER_OP_menor_o_igual    \<=
+ER_OP_distinto         \<\>
 ER_KW_accion           (?i:accion)
 ER_KW_algoritmo        (?i:algoritmo)
 ER_KW_booleano         (?i:booleano)
@@ -248,6 +249,7 @@ ER_KW_y                (?i:y)
 }
 {ER_OP_igual} {
     printf("operator OP_igual %s\n", yytext);
+    yylval.para_entero = D_IGUAL;
     return TOK_IGUAL;
 }
 {ER_OP_asignacion} {
@@ -300,18 +302,22 @@ ER_KW_y                (?i:y)
 }
 {ER_OP_mayor} {
     printf("operator OP_mayor %s\n", yytext);
+    yylval.para_entero = D_MAYOR;
     return TOK_OPREL;
 }
 {ER_OP_menor} {
     printf("operator OP_menor %s\n", yytext);
+    yylval.para_entero = D_MENOR;
     return TOK_OPREL;
 }
 {ER_OP_mayor_o_igual} {
     printf("operator OP_mayor_o_igual %s\n", yytext);
+    yylval.para_entero = D_MAOI;
     return TOK_OPREL;
 }
 {ER_OP_menor_o_igual} {
     printf("operator OP_menor_o_igual %s\n", yytext);
+    yylval.para_entero = D_MEOI;
     return TOK_OPREL;
 }
 

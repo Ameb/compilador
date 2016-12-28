@@ -18,8 +18,8 @@ ts.o: ts.c ts.h
 	gcc -c ts.c
 tc.o: tc.c tc.h
 	gcc -c tc.c
-a.out: parser.tab.c lex.yy.o ts.o tc.o
-	gcc parser.tab.c lex.yy.o ts.o tc.o $(LFL) -lm
+a.out: parser.tab.c lex.yy.o ts.o tc.o lb.o
+	gcc parser.tab.c lex.yy.o ts.o tc.o  lb.o $(LFL) -lm
 run: a.out
 	./a.out
 clean:

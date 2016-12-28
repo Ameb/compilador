@@ -4,7 +4,7 @@
 struct lb * makelist(int i) {
 	struct lb * l = malloc(sizeof *l);
 	l->item = i;
-	l->next = null;
+	l->next = NULL;
 	return l;
 
 }
@@ -13,12 +13,12 @@ struct lb * merge(struct lb * l1, struct lb * l2) {
 	struct lb * l = malloc(sizeof * l);
 	struct lb * aux = l;
 	struct lb * p = l1;
-	while (p != null) {
+	while (p != NULL) {
 		aux->next = p;
 		p = p->next;
 	}
 	p = l2;
-	while (p != null) {
+	while (p != NULL) {
 		aux->next = p;
 		p = p->next;
 	}
@@ -27,8 +27,8 @@ struct lb * merge(struct lb * l1, struct lb * l2) {
 // añadir los saltos en cada una de las posiciones
 void backpatch(struct tc * tabla_cuadruplas, struct lb * l, int i) {
 	struct lb * p = l;
-	while (p != null) {
-		tabla_cuadruplas->cuadruplas[p.item][3] = i;
+	while (p != NULL) {
+		tabla_cuadruplas->cuadruplas[p->item][3] = i;
 		p = p->next;
 	}
 }

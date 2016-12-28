@@ -10,10 +10,10 @@ void gen(struct tc* tabla_cuadruplas, int op, int op1, int op2, int res) {
 	printf("Introducidos en la tc\n%d\t%d\t%d\t%d\n",op,op1,op2,res);
 }
 void tc_print(struct tc* tabla_cuadruplas) {
-	printf("Tabla cuadruplas:\nop\top1\top2\tres\n");	
+	printf("Tabla cuadruplas (tamaño %d):\ni\top\top1\top2\tres\n", tabla_cuadruplas->nextquad);	
 	int i;
 	for (i = 0; i < tabla_cuadruplas->nextquad; i++) {
-		printf("%d\t%d\t%d\t%d\n",
+		printf("%d\t%d\t%d\t%d\t%d\n", i,
 			tabla_cuadruplas->cuadruplas[i][0],
 			tabla_cuadruplas->cuadruplas[i][1],
 			tabla_cuadruplas->cuadruplas[i][2],

@@ -13,11 +13,11 @@
 #define DOP_DIVISION_REAL 24
 #define DOP_MENOSU_REAL 25
 #define DOP_ASIGNACION 30
+#define DOP_SALTO 100
 struct tc{
     int nextquad;
     int cuadruplas[100][4];
 };
-
 void gen(struct tc* tabla_cuadruplas, int op, int op1, int op2, int res);
 void tc_print(struct tc* tabla_cuadruplas);
 #endif

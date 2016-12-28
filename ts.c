@@ -46,7 +46,8 @@ struct nodo* ts_buscar_nombre(struct ts* tabla_simbolos, char * nombre) {
     struct nodo * aux;
     if (tabla_simbolos == NULL) return NULL;
     aux = tabla_simbolos->init;
-    while (aux != NULL && (strcmp(aux->nombre, nombre) != 0)) {
+    while (aux != NULL) {
+        if (strcmp(aux->nombre, nombre) == 0) break;
         aux = aux->sig;
     }
     return aux;

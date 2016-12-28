@@ -21,4 +21,6 @@ Conviene llegar a booleanas.
 * Si creamos un cambiar_tipo en la tabla de simbolos podremos trabajar con tipos diferentes
 
 28/12/2016
-* Tenemos algún puntero erróneo, segfault al terminar el programa. 
+* ~~Tenemos algún puntero erróneo, segfault al terminar el programa.~~ El problema lo causa la busqueda de una variable por nombre en la TS, cuando la variable no está.
+* Cambiada la gramática para incorporar M en las expresiones booleanas
+* Cambiada la gramática para incorporar el token igual en las operaciones relacionales

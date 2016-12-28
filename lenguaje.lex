@@ -12,7 +12,8 @@ ER_identificador       {ER_letra}{ER_letra_o_cifra}*
 ER_exponente           (e|E){ER_cifra}+
 ER_literal_entero      {ER_cifra}+{ER_exponente}?
 ER_literal_real        {ER_cifra}+\.{ER_cifra}+{ER_exponente}?
-ER_literal_booleano    ((?i:verdadero)|(?i:falso))
+ER_literal_verdadero   (?i:verdadero)
+ER_literal_falso       (?i:falso)
 ER_literal_caracter    \"[^\"]*\"
 ER_literal_cadena      \'([^']|\/\')*\'
 ER_comentario          \{([^\}]|\/\}|ER_letra_o_cifra)*\}
@@ -324,9 +325,13 @@ ER_KW_y                (?i:y)
     printf( "literal_real: %s (%g)\n", yytext, atof( yytext ) );
     return TOK_LITERALNUMERICO;
 }
-{ER_literal_booleano} {
-    printf( "literal_booleano: %s\n", yytext);
-    // pendiente
+{ER_literal_verdadero} {
+    printf( "literal_verdadero: %s\n", yytext);
+    return TOK_VERDADERO;
+}
+{ER_literal_falso} {
+    printf( "literal_falso: %s\n", yytext);
+    return TOK_FALSO;
 }
 {ER_literal_caracter} {
     printf( "literal_caracter: %s\n", yytext);

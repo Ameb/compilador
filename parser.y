@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "lb.h"
 #include "ts.h"
 #include "tc.h"
 #include "definiciones.h"
@@ -65,6 +66,10 @@ char aux[] = "aux";
     //struct nodo * para_lista_id;
     int para_entero;
     char * para_cadenas;
+    struct {
+        struct lb * truelist;
+        struct lb * falselist;
+    }para_bool;
 }
 %type <para_entero> lista_id
 %type <para_entero> d_tipo
@@ -72,6 +77,8 @@ char aux[] = "aux";
 %type <para_entero> exp_a
 %type <para_entero> expresion
 %type <para_entero> asignacion
+%type <para_bool> exp_b
+%type <para_entero> M
 %%
 
 
@@ -178,7 +185,9 @@ decl_sal: TOK_SAL lista_d_var {}
 expresion: exp_a {
         $$ = $1;
     }
-    | exp_b {}
+    | exp_b {
+        //pasar de una variable booleana a 
+    }
     | funcion_ll {}
 ;
 exp_a: exp_a TOK_SUMA exp_a {
@@ -326,19 +335,32 @@ exp_a: exp_a TOK_DIVENT exp_a {
             default:
                 yyerror("restau: tipo no conocido");
         }
-        printf("asd");
+        // printf("asd");
         gen(tabla_cuadruplas, aux, $2, 0, res);
         $$ = res;
     }
 ;
-exp_b: exp_b TOK_Y exp_b {}
-    | exp_b TOK_O exp_b {}
-    | TOK_NO exp_b {}
+exp_b: exp_b TOK_Y M exp_b {}
+    | exp_b TOK_O  M exp_b {
+        backpatch(tabla_cuadruplas, $1.falselist, $3)
+        //...
+    }
+    | TOK_NO exp_b {
+        $$.truelist = $2.falselist;
+        $$.falselist = $2.truelist;
+    }
 //    | operando {}    las expresiones booleanas ya no pueden ser terminales
-    | TOK_VERDADERO {}
-    | TOK_FALSO {}
+    | TOK_VERDADERO {
+        $$.truelist = makelist(tabla_cuadruplas->nextquad);
+        gen(tabla_cuadruplas, DOP_SALTO, 0, 0, 0);
+    }
+    | TOK_FALSO {
+        $$.falselist = makelist(tabla_cuadruplas->nextquad);
+        gen(tabla_cuadruplas, DOP_SALTO, 0, 0, 0);
+    }
 ;
-exp_b: expresion TOK_OPREL expresion {}
+M: {} /* epsilon */
+exp_b: expresion TOK_OPREL M expresion {}
     | TOK_ABPAR exp_b TOK_CERPAR {}
 ;
 operando: TOK_IDENTIFICADOR {

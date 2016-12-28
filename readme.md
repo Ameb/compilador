@@ -16,7 +16,9 @@ Conviene llegar a booleanas.
 
 27/12/2016:
 * Hay que evitar que se genere código cuando el tipo es desconocido
-* Implementaciones en la tabla de cuádruplas pendientes:
-	- backpatch
-	- merge
+* ~~Implementaciones en la tabla de cuádruplas pendientes:~~
+	~~makelist, backpatch, merge~~
 * Si creamos un cambiar_tipo en la tabla de simbolos podremos trabajar con tipos diferentes
+
+28/12/2016
+* Tenemos algún puntero erróneo, segfault al terminar el programa. 

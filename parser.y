@@ -186,7 +186,7 @@ expresion: exp_a {
         $$ = $1;
     }
     | exp_b {
-        //pasar de una variable booleana a 
+        //pasar de booleano a expresion
     }
     | funcion_ll {}
 ;
@@ -316,9 +316,7 @@ exp_a: exp_a TOK_DIVENT exp_a {
     | TOK_ABPAR exp_a TOK_CERPAR {
         $$ = $2;
     }
-    | operando {
-        $$ = $1;
-    }
+    | operando {} /* $$ = $1 */
     | TOK_LITERALNUMERICO {
         //printf("Leido %f",$1.val_real);
     }
@@ -340,10 +338,15 @@ exp_a: exp_a TOK_DIVENT exp_a {
         $$ = res;
     }
 ;
-exp_b: exp_b TOK_Y M exp_b {}
+exp_b: exp_b TOK_Y M exp_b {
+        backpatch(tabla_cuadruplas, $1.falselist, $3);
+        $$.falselist = merge($1.falselist, $4.falselist);
+        $$.truelist = $4.truelist;
+    }
     | exp_b TOK_O  M exp_b {
-        backpatch(tabla_cuadruplas, $1.falselist, $3)
-        //...
+        backpatch(tabla_cuadruplas, $1.truelist, $3);
+        $$.truelist = merge($1.truelist, $4.truelist);
+        $$.falselist = $4.falselist;
     }
     | TOK_NO exp_b {
         $$.truelist = $2.falselist;
@@ -359,7 +362,10 @@ exp_b: exp_b TOK_Y M exp_b {}
         gen(tabla_cuadruplas, DOP_SALTO, 0, 0, 0);
     }
 ;
-M: {} /* epsilon */
+M: {
+        $$ = tabla_cuadruplas->nextquad;
+    } /* epsilon */
+;
 exp_b: expresion TOK_OPREL M expresion {}
     | TOK_ABPAR exp_b TOK_CERPAR {}
 ;
@@ -453,7 +459,7 @@ int main( int argc, char **argv ){
     yyparse();
     ts_print(tabla_simbolos);
     tc_print(tabla_cuadruplas);
-    test = ts_buscar_nombre(tabla_simbolos,(char*) aux);
+    //test = ts_buscar_nombre(tabla_simbolos,(char*) aux);
     if (test != NULL) {
         printf("Encontrado aux: %s", test->nombre);
     }

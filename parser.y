@@ -370,8 +370,8 @@ M: {
 exp_b: expresion op_rel M expresion {}
     | TOK_ABPAR exp_b TOK_CERPAR {}
 ;
-op_rel: TOK_OPREL
-    | TOK_IGUAL
+op_rel: TOK_OPREL {}
+    | TOK_IGUAL {}
 ;
 operando: TOK_IDENTIFICADOR {
         // sacar sid de la variable y meterlo en $$
@@ -463,7 +463,11 @@ int main( int argc, char **argv ){
     yyparse();
     ts_print(tabla_simbolos);
     tc_print(tabla_cuadruplas);
-    //test = ts_buscar_nombre(tabla_simbolos,(char*) aux);
+    
+    struct nodo *aux2;    
+    aux2 = ts_buscar_sid(tabla_simbolos, 1);
+
+    test = ts_buscar_nombre(tabla_simbolos,(char*) aux2->nombre);
     if (test != NULL) {
         printf("Encontrado aux: %s", test->nombre);
     }

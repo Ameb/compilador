@@ -79,6 +79,7 @@ char aux[] = "aux";
 %type <para_entero> asignacion
 %type <para_bool> exp_b
 %type <para_entero> M
+%type <para_entero> op_rel
 %%
 
 
@@ -366,8 +367,11 @@ M: {
         $$ = tabla_cuadruplas->nextquad;
     } /* epsilon */
 ;
-exp_b: expresion TOK_OPREL M expresion {}
+exp_b: expresion op_rel M expresion {}
     | TOK_ABPAR exp_b TOK_CERPAR {}
+;
+op_rel: TOK_OPREL
+    | TOK_IGUAL
 ;
 operando: TOK_IDENTIFICADOR {
         // sacar sid de la variable y meterlo en $$

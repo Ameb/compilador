@@ -14,6 +14,12 @@
 #define DOP_MENOSU_REAL 25
 #define DOP_ASIGNACION 30
 #define DOP_SALTO 100
+#define DOP_SALTO_SI_MENOR 201
+#define DOP_SALTO_SI_MEOI 202
+#define DOP_SALTO_SI_IGUAL 203
+#define DOP_SALTO_SI_MAOI 204
+#define DOP_SALTO_SI_MAYOR 205
+#define DOP_SALTO_SI_DISTINTO 206
 struct tc{
     int nextquad;
     int cuadruplas[100][4];

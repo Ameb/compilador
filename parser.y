@@ -365,16 +365,38 @@ exp_b: exp_b TOK_Y M exp_b {
 ;
 M: {
         $$ = tabla_cuadruplas->nextquad;
-    } /* epsilon */
+    }
 ;
-exp_b: expresion op_rel M expresion {}
+exp_b: expresion op_rel M expresion {
+        int op;
+        switch ($2) {
+            case D_MENOR:
+                op = DOP_SALTO_SI_MENOR;
+                break;
+            case D_MEOI:
+                op = DOP_SALTO_SI_MEOI;
+                break;
+            case D_IGUAL:/*TOK_IGUAL*/
+                op = DOP_SALTO_SI_IGUAL;
+                break;
+            case D_MAOI:
+                op = DOP_SALTO_SI_MAOI;
+                break;
+            case D_MAYOR:
+                op = DOP_SALTO_SI_MAYOR;
+                break;
+        }
+        $$.truelist = makelist($3);
+        $$.truelist = makelist($3);
+        gen(tabla_cuadruplas, op, $1, $4, 0);
+        gen(tabla_cuadruplas, DOP_SALTO, 0, 0, 0);
+    }
     | TOK_ABPAR exp_b TOK_CERPAR {}
 ;
 op_rel: TOK_OPREL {}
     | TOK_IGUAL {}
 ;
 operando: TOK_IDENTIFICADOR {
-        // sacar sid de la variable y meterlo en $$
         struct nodo* aux;
         aux = ts_buscar_nombre(tabla_simbolos, $1);
         if (aux != NULL)

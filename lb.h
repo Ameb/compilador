@@ -8,4 +8,5 @@ struct lb{
 struct lb * makelist(int i);
 struct lb * merge(struct lb * l1, struct lb * l2);
 void backpatch(struct tc * tabla_cuadruplas, struct lb * l, int i);
+void printlb(struct lb * l);
 #endif

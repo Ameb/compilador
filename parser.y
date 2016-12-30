@@ -70,16 +70,24 @@ char aux[] = "aux";
         struct lb * truelist;
         struct lb * falselist;
     }para_bool;
+    struct {
+        struct lb * nextlist;
+    }para_instr;
 }
 %type <para_entero> lista_id
 %type <para_entero> d_tipo
 %type <para_entero> operando
 %type <para_entero> exp_a
 %type <para_entero> expresion
-%type <para_entero> asignacion
 %type <para_bool> exp_b
 %type <para_entero> M
 %type <para_entero> op_rel
+%type <para_instr> instruccion
+%type <para_instr> instrucciones
+%type <para_instr> alternativa
+%type <para_instr> lista_opciones
+%type <para_instr> asignacion
+%type <para_instr> it_cota_exp
 %%
 
 
@@ -335,7 +343,7 @@ exp_a: exp_a TOK_DIVENT exp_a {
     }
     | TOK_RESTA exp_a {
         int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $2));
-        int aux;
+        int aux = 0;
         switch(ts_tipo(tabla_simbolos,res)) {
             case D_ENTERO:
                 aux = DOP_MENOSU_ENT;
@@ -421,18 +429,32 @@ operando: TOK_IDENTIFICADOR {
     | operando TOK_REF {}
 ;
 
-instrucciones: instruccion TOK_PCOMA instrucciones {
+instrucciones: instruccion TOK_PCOMA M instrucciones {
         printf("P: Reducida instruccion con mas instrucciones detras\n");
+        printf("P: nextquad: %d\n", tabla_cuadruplas->nextquad);
+        backpatch(tabla_cuadruplas, $1.nextlist, $3);
+        /*
+        if ($3.nextlist == NULL) {
+            $$.nextlist = $1.nextlist;
+        }
+        else {
+            $$.nextlist = $3.nextlist;
+        }
+        */
     }
     | instruccion {
         printf("P: Reducida instruccion 'suelta'\n");
+        $$ = $1;
     }
-    | {}
+    | {
+        $$.nextlist = NULL;
+    }
 ;
 instruccion:  TOK_CONTINUAR {}
     | asignacion {
         printf("P: reducida instruccion asignacion\n");
-        }
+        $$ = $1;
+    }
     | alternativa {}
     | iteracion {}
     | accion_ll {}
@@ -442,23 +464,36 @@ asignacion: operando TOK_ASIGNACION expresion {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
             gen(tabla_cuadruplas, DOP_ASIGNACION, $1, $3, res);
-            $$ = res;
+            $$.nextlist = makelist(tabla_cuadruplas->nextquad);
         } else {
             yyerror("asignacion: Tipos incompatibles."); 
         }
 }
 ;
-alternativa: TOK_SI expresion TOK_ENTONCES instrucciones lista_opciones TOK_FSI {}
+alternativa: TOK_SI exp_b TOK_ENTONCES M instrucciones lista_opciones TOK_FSI {
+        backpatch(tabla_cuadruplas, $2.truelist, $4);
+        $$.nextlist = merge($2.falselist, $5.nextlist)
+        }
 ;
-lista_opciones: TOK_SINO expresion TOK_ENTONCES instrucciones lista_opciones {}
-    |
+lista_opciones: TOK_SINO exp_b TOK_ENTONCES M instrucciones lista_opciones {
+        backpatch(tabla_cuadruplas, $2.truelist, $4);
+        $$.nextlist = merge($2.falselist, $5.nextlist)
+    }
+    |   {
+            $$.nextlist = NULL;
+    }
 ;
 iteracion: it_cota_fija {}
     | it_cota_exp {}
 ;
-it_cota_exp: TOK_MIENTRAS expresion TOK_HACER instrucciones TOK_FMIENTRAS {}
+it_cota_exp: TOK_MIENTRAS M exp_b TOK_HACER M instrucciones TOK_FMIENTRAS {
+    backpatch(tabla_cuadruplas, $6.nextlist, $2);
+    backpatch(tabla_cuadruplas, $3.truelist, $5);
+    $$.nextlist = $3.falselist;
+    gen(tabla_cuadruplas, DOP_SALTO, 0, 0, $2);
+}
 ;
-it_cota_fija: TOK_PARA TOK_IDENTIFICADOR TOK_ASIGNACION expresion TOK_HASTA expresion TOK_HACER instrucciones TOK_FPARA {}
+it_cota_fija: TOK_PARA TOK_IDENTIFICADOR TOK_ASIGNACION exp_b TOK_HASTA expresion TOK_HACER instrucciones TOK_FPARA {}
 ;
 accion_d: TOK_ACCION a_cabecera bloque TOK_FACCION {}
 ;

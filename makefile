@@ -20,7 +20,7 @@ parser.tab.h parser.tab.c: parser.y
 .c.o:
 	$(CC) -c -o $@ $<
 a.out: parser.tab.c lex.yy.o $(AUXOBJS)
-	$(CC) parser.tab.c lex.yy.o $(AUXOBJS) $(LFL) -lm
+	$(CC) -Wall parser.tab.c lex.yy.o $(AUXOBJS) $(LFL) -lm
 run: a.out
 	./a.out
 clean:

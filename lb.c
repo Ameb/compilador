@@ -9,7 +9,6 @@ struct lb * makelist(int i) {
 	return l;
 
 }
-// juntar dos listas de bools
 struct lb * merge(struct lb * l1, struct lb * l2) {
 	if (l1 == NULL && l2 == NULL) {
 		return NULL;

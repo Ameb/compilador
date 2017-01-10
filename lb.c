@@ -33,24 +33,19 @@ struct lb * merge(struct lb * l1, struct lb * l2) {
 }
 // añadir los saltos en cada una de las posiciones
 void backpatch(struct tc * tabla_cuadruplas, struct lb * l, int i) {
-	printf("Backpaching...i = %d\n",i);
+	//printf("Backpaching...i = %d\n",i);
 	struct lb * p = l;
-	printlb(l);
 	while (p != NULL) {
-		printf("%d\n", p->item);
-		if (p->item < 100) {
 			tabla_cuadruplas->cuadruplas[p->item][3] = i;
-			
-		}
 		p = p->next;
 	}
-	printf("fin backpatching\n");
+	//printf("fin backpatching\n");
 }
 void printlb(struct lb * l) {
 	printf("lb: ");
 	struct lb * p = l;
 	while (p != NULL) {
-		//printf("%d\t", p->item);
+		printf("%d\t", p->item);
 		p = p->next;
 	}
 	printf("\n");

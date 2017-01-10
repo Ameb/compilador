@@ -29,7 +29,6 @@ void ts_print(struct ts* tabla_simbolos) {
         test = test->sig;
     }
 }
-
 int ts_tipo(struct ts* tabla_simbolos, int sid) {
     struct nodo * aux;
     aux = ts_buscar_sid(tabla_simbolos, sid);
@@ -40,8 +39,6 @@ int ts_tipo(struct ts* tabla_simbolos, int sid) {
         return 0;    
     }
 }
-
-// busqueda en la ts
 struct nodo* ts_buscar_nombre(struct ts* tabla_simbolos, char * nombre) {
     struct nodo * aux;
     if (tabla_simbolos == NULL) return NULL;
@@ -62,14 +59,10 @@ struct nodo* ts_buscar_sid(struct ts* tabla_simbolos, int sid) {
     return aux;
     printf("Encontrado %s en la ts\n", aux->nombre);
 }
-// 
 int newtemp(struct ts* tabla_simbolos, int tipo) {
     struct nodo * temp;
     temp = (struct nodo *) malloc(sizeof(struct nodo));
     temp->tipo = tipo;
-    //temp->nombre = (char *)malloc(strlen("temporal"));
-    //temp->nombre = "temporal";
-    //temp->sig = NULL;
     return ts_append(tabla_simbolos, temp);
 }
 char * varname(struct ts* tabla_simbolos, int sid) {

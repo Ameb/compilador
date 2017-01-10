@@ -3,7 +3,7 @@
 #include "lb.h"
 // inicializar una lista con una posicion
 struct lb * makelist(int i) {
-	struct lb * l = malloc(sizeof * l);
+	struct lb * l = malloc(sizeof(struct lb));
 	l->item = i;
 	l->next = NULL;
 	return l;
@@ -11,10 +11,6 @@ struct lb * makelist(int i) {
 }
 // juntar dos listas de bools
 struct lb * merge(struct lb * l1, struct lb * l2) {
-	printf("Juntando listas...\n");
-	printlb(l1);
-	printlb(l2);
-	//struct lb * l = malloc(sizeof * l);
 	if (l1 == NULL && l2 == NULL) {
 		return NULL;
 	}
@@ -25,16 +21,19 @@ struct lb * merge(struct lb * l1, struct lb * l2) {
 		return l1;
 	}
 	struct lb * p = l1;
+	struct lb * q;
 	while (p != NULL) {
+		q = p;
 		p = p->next;
 	}
-	p->next = l2;
+	q->next = l2;
 	return l1;
 }
 // añadir los saltos en cada una de las posiciones
 void backpatch(struct tc * tabla_cuadruplas, struct lb * l, int i) {
-	//printf("Backpaching...i = %d\n",i);
 	struct lb * p = l;
+	//if (p != NULL)
+	//	printf("Backpaching...i = %d, indice tabla %d\n",i, p->item);
 	while (p != NULL) {
 			tabla_cuadruplas->cuadruplas[p->item][3] = i;
 		p = p->next;

@@ -68,10 +68,10 @@ void tc_translate(struct tc* tabla_cuadruplas, struct ts* tabla_simbolos) {
 				printf("%d\t goto %d\n", i, tabla_cuadruplas->cuadruplas[i][3]);
 				break;
 			case DOP_SALTO_SI_MENOR:
-				printf("%d\t if %s > %s goto %d\n", i, varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][1]), varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][2]), tabla_cuadruplas->cuadruplas[i][3]);
+				printf("%d\t if %s < %s goto %d\n", i, varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][1]), varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][2]), tabla_cuadruplas->cuadruplas[i][3]);
 				break;
 			case DOP_SALTO_SI_MEOI:
-				printf("%d\t if %s >= %s goto %d\n", i, varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][1]), varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][2]), tabla_cuadruplas->cuadruplas[i][3]);
+				printf("%d\t if %s <= %s goto %d\n", i, varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][1]), varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][2]), tabla_cuadruplas->cuadruplas[i][3]);
 				break;
 			case DOP_SALTO_SI_IGUAL:
 				printf("%d\t if %s = %s goto %d\n", i, varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][1]), varname(tabla_simbolos, tabla_cuadruplas->cuadruplas[i][2]), tabla_cuadruplas->cuadruplas[i][3]);

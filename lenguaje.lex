@@ -6,7 +6,9 @@
 ER_cifra               [0-9]
 ER_letra               [A-Za-z]
 ER_letra_o_cifra       ({ER_letra}|{ER_cifra})
-ER_special             [\"()\{\}_\']
+ER_special             [\"\{\}_\']
+ER_abpar               \(
+ER_cerpar              \)
 ER_white_space         [ \t]
 ER_identificador       {ER_letra}{ER_letra_o_cifra}*
 ER_exponente           (e|E){ER_cifra}+
@@ -118,7 +120,7 @@ ER_KW_y                (?i:y)
 }
 {ER_KW_div} {
     printf("keyword KW_div %s\n", yytext);
-    return TOK_DIV;
+    return TOK_DIVENT;
 }
 {ER_KW_ent} {
     printf("keyword KW_ent %s\n", yytext);
@@ -348,6 +350,12 @@ ER_KW_y                (?i:y)
     // ...
 }
 
+{ER_abpar} {
+    return TOK_ABPAR;
+}
+{ER_cerpar} {
+    return TOK_CERPAR;
+}
 {ER_special} {
     printf( "especial: %s\n", yytext);
 }

@@ -72,3 +72,13 @@ int newtemp(struct ts* tabla_simbolos, int tipo) {
     //temp->sig = NULL;
     return ts_append(tabla_simbolos, temp);
 }
+char * varname(struct ts* tabla_simbolos, int sid) {
+    struct nodo * aux = ts_buscar_sid(tabla_simbolos, sid);
+    char * n = NULL;
+    if (aux->nombre != NULL)
+        return aux->nombre;
+    else {
+        asprintf(&n, "t%02d", sid);
+        return n;
+    }
+}

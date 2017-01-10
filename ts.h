@@ -19,4 +19,5 @@ int ts_tipo(struct ts* tabla_simbolos, int sid);
 struct nodo* ts_buscar_nombre(struct ts* tabla_simbolos, char * nombre);
 struct nodo* ts_buscar_sid(struct ts* tabla_simbolos, int sid);
 int newtemp(struct ts* tabla_simbolos, int tipo);
+char * varname(struct ts* tabla_simbolos, int sid);
 #endif

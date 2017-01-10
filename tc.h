@@ -20,10 +20,12 @@
 #define DOP_SALTO_SI_MAOI 204
 #define DOP_SALTO_SI_MAYOR 205
 #define DOP_SALTO_SI_DISTINTO 206
+#include "ts.h"
 struct tc{
     int nextquad;
     int cuadruplas[100][4];
 };
 void gen(struct tc* tabla_cuadruplas, int op, int op1, int op2, int res);
 void tc_print(struct tc* tabla_cuadruplas);
+void tc_translate(struct tc* tabla_cuadruplas, struct ts* tabla_simbolos);
 #endif

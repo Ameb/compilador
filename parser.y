@@ -51,7 +51,6 @@ struct tc* tabla_cuadruplas;
 %token TOK_FUNCION TOK_FFUNCION
 %token TOK_DEV
 %token TOK_IGUAL
-// asignacion?
 %token TOK_PCOMA
 %token TOK_COMA
 %token TOK_ES
@@ -61,7 +60,6 @@ struct tc* tabla_cuadruplas;
 %left <para_entero> TOK_MULT TOK_DIV
 %left <para_entero> TOK_MOD TOK_DIVENT
 %union {
-    //struct nodo * para_lista_id;
     int para_entero;
     char * para_cadenas;
     struct {
@@ -151,17 +149,6 @@ lista_campos: TOK_IDENTIFICADOR TOK_DOSP d_tipo TOK_PCOMA lista_campos {}
 lista_d_cte: TOK_IDENTIFICADOR TOK_IGUAL TOK_LITERAL TOK_PCOMA lista_d_cte {}
     |
 ;
-/*
-lista_d_var: lista_id TOK_DOSP TOK_IDENTIFICADOR TOK_PCOMA lista_d_var {}
-    |  lista_id TOK_DOSP d_tipo TOK_PCOMA lista_d_var {}
-    |  {}
-;
-lista_id: TOK_IDENTIFICADOR TOK_COMA lista_id {}
-    | TOK_IDENTIFICADOR {
-        printf("P: Reducida lista_id con un unico item\n");
-    }
-;
-*/
 lista_d_var: lista_id TOK_PCOMA lista_d_var {}
     |   {}
 ;
@@ -176,8 +163,6 @@ lista_id: TOK_IDENTIFICADOR TOK_DOSP d_tipo {
 	else {
 		yyerror("Variable duplicada");	
 	}
-        // guardar el tipo en algun sitio
-
     }
     | TOK_IDENTIFICADOR TOK_COMA lista_id {
         printf("P: leido %s de tipo %d\n", $1, $3);
@@ -189,8 +174,6 @@ lista_id: TOK_IDENTIFICADOR TOK_DOSP d_tipo {
 	else {
 		yyerror("Variable duplicada");	
 	}
-        // en lista_id tenemos ese tipo guardado para asignarlo a 
-        // TOK_IDENTIFICADOR
     }
 ;
 decl_ent_sal: decl_ent {}
@@ -210,10 +193,9 @@ expresion: exp_a {
     | funcion_ll {}
 ;
 exp_a: exp_a TOK_SUMA exp_a {
-        //printf("Sumando variables %d y %d de tipos %d y %d\n",$1,$3,ts_tipo(tabla_simbolos, $1),ts_tipo(tabla_simbolos, $3));
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos,$1));
-            int aux;
+            int aux = 0;
             switch(ts_tipo(tabla_simbolos,res)) {
                 case D_ENTERO:
                     aux = DOP_SUMA_ENT;
@@ -234,7 +216,7 @@ exp_a: exp_a TOK_SUMA exp_a {
     | exp_a TOK_RESTA exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            int aux;
+            int aux = 0;
             switch(ts_tipo(tabla_simbolos,res)) {
                 case D_ENTERO:
                     aux = DOP_RESTA_ENT;
@@ -255,7 +237,7 @@ exp_a: exp_a TOK_SUMA exp_a {
     | exp_a TOK_MULT exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            int aux;
+            int aux = 0;
             switch(ts_tipo(tabla_simbolos,res)) {
                 case D_ENTERO:
                     aux = DOP_MULTIPLICACION_ENT;
@@ -276,7 +258,7 @@ exp_a: exp_a TOK_SUMA exp_a {
     | exp_a TOK_DIV exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            int aux;
+            int aux = 0;
             switch(ts_tipo(tabla_simbolos,res)) {
                 case D_ENTERO:
                     aux = DOP_DIVISION_ENT;
@@ -297,7 +279,7 @@ exp_a: exp_a TOK_SUMA exp_a {
     | exp_a TOK_MOD exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            int aux;
+            int aux = 0;
             switch(ts_tipo(tabla_simbolos,res)) {
                 case D_ENTERO:
                     aux = DOP_MODENT;
@@ -317,7 +299,7 @@ exp_a: exp_a TOK_SUMA exp_a {
 exp_a: exp_a TOK_DIVENT exp_a {
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
             int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            int aux;
+            int aux = 0;
             switch(ts_tipo(tabla_simbolos,res)) {
                 case D_ENTERO:
                     aux = DOP_DIVENT;
@@ -333,6 +315,7 @@ exp_a: exp_a TOK_DIVENT exp_a {
         }
     }
     | TOK_ABPAR exp_a TOK_CERPAR {
+        printf("Reduciendo expresion entre parentesis\n");
         $$ = $2;
     }
     | operando {} /* $$ = $1 */
@@ -358,12 +341,12 @@ exp_a: exp_a TOK_DIVENT exp_a {
     }
 ;
 exp_b: exp_b TOK_Y M exp_b {
-        backpatch(tabla_cuadruplas, $1.falselist, $3);
+        backpatch(tabla_cuadruplas, $1.truelist, $3);
         $$.falselist = merge($1.falselist, $4.falselist);
         $$.truelist = $4.truelist;
     }
     | exp_b TOK_O  M exp_b {
-        backpatch(tabla_cuadruplas, $1.truelist, $3);
+        backpatch(tabla_cuadruplas, $1.falselist, $3);
         $$.truelist = merge($1.truelist, $4.truelist);
         $$.falselist = $4.falselist;
     }
@@ -371,14 +354,13 @@ exp_b: exp_b TOK_Y M exp_b {
         $$.truelist = $2.falselist;
         $$.falselist = $2.truelist;
     }
-//    | operando {}    las expresiones booleanas ya no pueden ser terminales
     | TOK_VERDADERO {
-        $$.truelist = makelist(tabla_cuadruplas->nextquad);
-        gen(tabla_cuadruplas, DOP_SALTO, 0, 0, 0);
+        //$$.truelist = makelist(tabla_cuadruplas->nextquad);
+        //gen(tabla_cuadruplas, DOP_SALTO, 0, 0, 0);
     }
     | TOK_FALSO {
-        $$.falselist = makelist(tabla_cuadruplas->nextquad);
-        gen(tabla_cuadruplas, DOP_SALTO, 0, 0, 0);
+        //$$.falselist = makelist(tabla_cuadruplas->nextquad);
+        //gen(tabla_cuadruplas, DOP_SALTO, 0, 0, 0);
     }
 ;
 M: {
@@ -387,6 +369,7 @@ M: {
 ;
 exp_b: expresion op_rel M expresion {
         int op;
+        printf("Reduciendo exp_b entre dos expresiones\n");
         switch ($2) {
             case D_MENOR:
                 op = DOP_SALTO_SI_MENOR;
@@ -405,7 +388,7 @@ exp_b: expresion op_rel M expresion {
                 break;
         }
         $$.truelist = makelist($3);
-        $$.truelist = makelist($3);
+        $$.falselist = makelist($3+1);
         gen(tabla_cuadruplas, op, $1, $4, 0);
         gen(tabla_cuadruplas, DOP_SALTO, 0, 0, 0);
     }
@@ -417,9 +400,10 @@ op_rel: TOK_OPREL {}
 operando: TOK_IDENTIFICADOR {
         struct nodo* aux;
         aux = ts_buscar_nombre(tabla_simbolos, $1);
-        if (aux != NULL)
+        if (aux != NULL) {
+            printf("Reduciendo TOK_IDENTIFICADOR %s (%d)\n",$1,aux->sid);
             $$ = aux->sid;
-        else
+        } else
             yyerror("variable desconocida");
     }
     | operando TOK_PUNTO operando {}
@@ -430,15 +414,9 @@ operando: TOK_IDENTIFICADOR {
 instrucciones: instruccion TOK_PCOMA M instrucciones {
         printf("P: Reducida instruccion con mas instrucciones detras\n");
         printf("P: nextquad: %d\n", tabla_cuadruplas->nextquad);
-        backpatch(tabla_cuadruplas, $1.nextlist, $3);
-        /*
-        if ($3.nextlist == NULL) {
-            $$.nextlist = $1.nextlist;
-        }
-        else {
-            $$.nextlist = $3.nextlist;
-        }
-        */
+        if ($1.nextlist != NULL)
+            backpatch(tabla_cuadruplas, $1.nextlist, $3);
+        $$.nextlist = $4.nextlist;
     }
     | instruccion {
         printf("P: Reducida instruccion 'suelta'\n");
@@ -460,23 +438,23 @@ instruccion:  TOK_CONTINUAR {}
 asignacion: operando TOK_ASIGNACION expresion {
         printf("Asignacion: %d(%d) := %d(%d)\n", $1, ts_tipo(tabla_simbolos, $1), $3, ts_tipo(tabla_simbolos, $3));
         if (ts_tipo(tabla_simbolos, $1) == ts_tipo(tabla_simbolos, $3)) {
-            int res = newtemp(tabla_simbolos, ts_tipo(tabla_simbolos, $1));
-            gen(tabla_cuadruplas, DOP_ASIGNACION, $1, $3, res);
-            $$.nextlist = makelist(tabla_cuadruplas->nextquad);
+            gen(tabla_cuadruplas, DOP_ASIGNACION, $3, 0, $1);
         } else {
             yyerror("asignacion: Tipos incompatibles.");
-            $$.nextlist = NULL;
         }
+        $$.nextlist = NULL;
 }
 ;
-alternativa: TOK_SI exp_b TOK_ENTONCES M instrucciones lista_opciones TOK_FSI {
+alternativa: TOK_SI exp_b TOK_ENTONCES M instrucciones M lista_opciones TOK_FSI {
         backpatch(tabla_cuadruplas, $2.truelist, $4);
-        $$.nextlist = merge($2.falselist, $5.nextlist)
+        backpatch(tabla_cuadruplas, $2.falselist, $6);
+        $$.nextlist = NULL;
         }
 ;
-lista_opciones: TOK_SINO exp_b TOK_ENTONCES M instrucciones lista_opciones {
+lista_opciones: TOK_SINO exp_b TOK_ENTONCES M instrucciones M lista_opciones {
         backpatch(tabla_cuadruplas, $2.truelist, $4);
-        $$.nextlist = merge($2.falselist, $5.nextlist)
+        backpatch(tabla_cuadruplas, $2.falselist, $6);
+        $$.nextlist = NULL;
     }
     |   {
             $$.nextlist = NULL;
@@ -486,10 +464,14 @@ iteracion: it_cota_fija {}
     | it_cota_exp {}
 ;
 it_cota_exp: TOK_MIENTRAS M exp_b TOK_HACER M instrucciones TOK_FMIENTRAS {
-    backpatch(tabla_cuadruplas, $6.nextlist, $2);
     backpatch(tabla_cuadruplas, $3.truelist, $5);
+    if ($6.nextlist != NULL)
+        backpatch(tabla_cuadruplas, $6.nextlist, $5);
+    else
+        gen(tabla_cuadruplas, DOP_SALTO, 0, 0, $2);
     $$.nextlist = $3.falselist;
-    gen(tabla_cuadruplas, DOP_SALTO, 0, 0, $2);
+    printf("reduciendo it_cota_exp añadiendo salto incondicional\n");
+    
 }
 ;
 it_cota_fija: TOK_PARA TOK_IDENTIFICADOR TOK_ASIGNACION exp_b TOK_HASTA expresion TOK_HACER instrucciones TOK_FPARA {}
@@ -531,6 +513,7 @@ int main( int argc, char **argv ){
     yyparse();
     ts_print(tabla_simbolos);
     tc_print(tabla_cuadruplas);
+    tc_translate(tabla_cuadruplas, tabla_simbolos);
     return 0;
 }
 

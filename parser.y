@@ -14,8 +14,6 @@ void yyerror(const char* s);
 void addVarToTS(char* nombre, int tipo);
 struct ts* tabla_simbolos;
 struct tc* tabla_cuadruplas;
-struct nodo * test;
-char aux[] = "aux";
 %}
 
 %token TOK_ABPAR TOK_CERPAR
@@ -466,7 +464,8 @@ asignacion: operando TOK_ASIGNACION expresion {
             gen(tabla_cuadruplas, DOP_ASIGNACION, $1, $3, res);
             $$.nextlist = makelist(tabla_cuadruplas->nextquad);
         } else {
-            yyerror("asignacion: Tipos incompatibles."); 
+            yyerror("asignacion: Tipos incompatibles.");
+            $$.nextlist = NULL;
         }
 }
 ;
@@ -532,14 +531,7 @@ int main( int argc, char **argv ){
     yyparse();
     ts_print(tabla_simbolos);
     tc_print(tabla_cuadruplas);
-    
-    struct nodo *aux2;    
-    aux2 = ts_buscar_sid(tabla_simbolos, 1);
-
-    test = ts_buscar_nombre(tabla_simbolos,(char*) aux2->nombre);
-    if (test != NULL) {
-        printf("Encontrado aux: %s", test->nombre);
-    }
+    return 0;
 }
 
 void yyerror(const char* s) {
